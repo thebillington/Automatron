@@ -138,11 +138,14 @@ function drawWorkerPath() {
 		// Draw the workers path
 		for (var i = 1; i < workers[currentWorker].path.length; i++) {
 			
-			// Draw at the location
-			drawGridSquare(workers[currentWorker].path[i].x, workers[currentWorker].path[i].y, color(0, 200, 255));
+			// Check that the path isn't over the worker
+			if (!(workers[currentWorker].location.x === workers[currentWorker].path[i].x && workers[currentWorker].location.y === workers[currentWorker].path[i].y)) {
 			
+				// Draw at the location
+				drawGridSquare(workers[currentWorker].path[i].x, workers[currentWorker].path[i].y, color(0, 200, 255));
+			
+			}
 		}
-		
 	}
 	
 }
@@ -191,16 +194,10 @@ function mouseClicked() {
 					
 						// Select the worker
 						currentWorker = i;
+						
+						// Set worker exists to true
+						workerExists = true;
 					}
-					else {
-						
-						// Unselect the worker
-						currentWorker = -1;
-						
-					}
-						
-					// Set worker exists to true
-					workerExists = true;
 					
 					// Break
 					break;
@@ -223,6 +220,12 @@ function mouseClicked() {
 					
 					// Add to the path
 					workers[currentWorker].path.push(Point(x,y));
+					
+				}
+				else {
+					
+					// If not valid, deselect worker
+					currentWorker = -1;
 					
 				}
 				
