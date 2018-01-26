@@ -154,6 +154,9 @@ function mouseClicked() {
 	
 		// Stop the game running
 		running = false;
+		
+		// Reset the workers
+		resetWorkers();
 	
 	}
 	else {
@@ -240,6 +243,9 @@ function keyPressed() {
 		// Set running to true
 		running = true;
 		
+		// Deselect all workers
+		currentWorker = -1;
+		
 	}
 	
 }
@@ -309,6 +315,20 @@ function updateWorkers() {
 			workers[i].direction = -workers[i].direction;
 			
 		}
+		
+	}
+	
+}
+
+// Function to reset all workers
+function resetWorkers() {
+	
+	// Look at each worker
+	for (var i = 0; i < workers.length; i++) {
+		
+		// Reset location and path location
+		workers[i].location = workers[i].path[0];
+		workers[i].currentPathLocation = 1;
 		
 	}
 	
