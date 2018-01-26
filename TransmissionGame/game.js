@@ -181,12 +181,9 @@ function mouseClicked() {
 	// Check if the game is running
 	if (running) {
 	
-		// Stop the game running
-		running = false;
+		// Reset
+		reset();
 		
-		// Reset the workers
-		resetWorkers();
-	
 	}
 	else {
 	
@@ -234,8 +231,32 @@ function mouseClicked() {
 			// If there isn't already a worker and we haven't got a worker selected
 			if (!workerExists && currentWorker == -1) {
 				
-				// Create a new worker at the location
-				workers.push(Worker(Point(x,y), [Point(x,y)]));
+				// Set package location to false
+				packageLocation = false;
+				
+				// Look at each package
+				for (var i = 0; i < packages.length; i++) {
+					
+					// If the location has a package on it
+					if (packages[i].location.x == x && packages[i].location.y == y) {
+						
+						// Set package location to true
+						packageLocation = true;
+						
+						// Break
+						break;
+						
+					}
+					
+				}
+				
+				// Check that there is no package on the new worker location
+				if (!packageLocation) {
+				
+					// Create a new worker at the location
+					workers.push(Worker(Point(x,y), [Point(x,y)]));
+				
+				}
 				
 			}
 			else if(!workerExists) {
@@ -340,7 +361,7 @@ function Worker(_location, _path) {
 function Package(_location) {
 	
 	// Return a package object
-	return {location: _location};
+	return {location: _location, originalLocation: _location};
 	
 }
 
@@ -376,6 +397,16 @@ function updateWorkers() {
 	
 }
 
+// Function to reset() {
+function reset() {
+	
+	// Reset everything to none running state
+	running = false;
+	resetWorkers();
+	resetPackages();
+	
+}
+
 // Function to reset all workers
 function resetWorkers() {
 	
@@ -386,6 +417,19 @@ function resetWorkers() {
 		workers[i].location = workers[i].path[0];
 		workers[i].currentPathLocation = 0;
 		workers[i].direction = 1;
+		
+	}
+	
+}
+
+// Function to reset the packages
+function resetPackages() {
+	
+	// Look at each package
+	for (var i = 0; i < packages.length; i++) {
+		
+		// Reset the location
+		packages[i].location = packages[i].originalLocation;
 		
 	}
 	
@@ -404,14 +448,20 @@ function pushPackages(worker) {
 			var currentLocation = workers[worker].path[workers[worker].currentPathLocation];
 			var prevLocation = workers[worker].path[workers[worker].currentPathLocation - 1];
 			
+			// Check whether the direction is negative
+			if (workers[worker].direction < 0 && (workers[worker].currentPathLocation > 0 && workers[worker].currentPathLocation < workers[worker].path.length - 1)) {
+				prevLocation = workers[worker].path[workers[worker].currentPathLocation + 1];
+				console.log("SWITCH");
+			}
+			
 			// Get the x and y direction to move
-			var dx = prevLocation.x - currentLocation.x;
-			var dy = prevLocation.y - currentLocation.y;
+			var dx = (currentLocation.x - prevLocation.x);
+			var dy = (currentLocation.y - prevLocation.y);
 			
 			console.log("Moving by: ("+dx+","+dy+")");
 			
 			// move the package
-			packages[i].location = Point(packages[i].location.x - dx, packages[i].location.y - dy);
+			packages[i].location = Point(packages[i].location.x + dx, packages[i].location.y + dy);
 			
 			
 		}
