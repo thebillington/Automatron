@@ -16,8 +16,9 @@ var currentWorker;
 // Store whether the game is currently running
 var running;
 
-// Space bar
+// Keys
 var SPACE = 32;
+var C_KEY = 67;
 
 // Setup function run before game starts
 function setup() {
@@ -220,8 +221,6 @@ function mouseClicked() {
 				// Otherwise check if the (x,y) we have selected is adjacent to the (x,y) of the LAST path location of the current worker
 				if (equalOrAdjacent(Point(x,y), workers[currentWorker].path[workers[currentWorker].path.length - 1])) {
 					
-					console.log("PATH VALID");
-					
 					// Add to the path
 					workers[currentWorker].path.push(Point(x,y));
 					
@@ -245,6 +244,19 @@ function keyPressed() {
 		
 		// Deselect all workers
 		currentWorker = -1;
+		
+	}
+	
+	// Check if it was the space key
+	if (keyCode == C_KEY) {
+		
+		// Check if there is a worker selected
+		if (currentWorker != -1) {
+			
+			// Clear the worker path
+			workers[currentWorker].path = [workers[currentWorker].path[0]];
+			
+		}
 		
 	}
 	
@@ -302,18 +314,23 @@ function updateWorkers() {
 	// For each worker
 	for (var i = 0; i < workers.length; i++) {
 		
-		// Move the worker to the next location
-		workers[i].currentPathLocation += workers[i].direction;
-		
 		// Update the position of this worker
 		workers[i].location = workers[i].path[workers[i].currentPathLocation];
 		
-		// Check whether this is the first or last location on the path
-		if (workers[i].currentPathLocation == 0 || workers[i].currentPathLocation == workers[i].path.length - 1) {
+		// Check if there is a path
+		if (workers[i].path.length > 1) {
 			
-			// Reverse the location
-			workers[i].direction = -workers[i].direction;
+			// Move the worker to the next location
+			workers[i].currentPathLocation += workers[i].direction;
 			
+			// Check whether this is the first or last location on the path
+			if (workers[i].currentPathLocation == 0 || workers[i].currentPathLocation == workers[i].path.length - 1) {
+				
+				// Reverse the location 
+				workers[i].direction = -workers[i].direction;
+				
+			}
+		
 		}
 		
 	}
@@ -328,7 +345,8 @@ function resetWorkers() {
 		
 		// Reset location and path location
 		workers[i].location = workers[i].path[0];
-		workers[i].currentPathLocation = 1;
+		workers[i].currentPathLocation = 0;
+		workers[i].direction = 1;
 		
 	}
 	
