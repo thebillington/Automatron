@@ -13,6 +13,12 @@ var workers;
 // Variable to hold the current worker
 var currentWorker;
 
+// Store whether the game is currently running
+var running;
+
+// Space bar
+var SPACE = 32;
+
 // Setup function run before game starts
 function setup() {
 		
@@ -27,6 +33,12 @@ function setup() {
 	
 	// Clear any workers
 	currentWorker = -1;
+	
+	// Set running to false
+	running = false;
+	
+	// Set the frame rate
+	frameRate(5);
 		
 }
 
@@ -41,6 +53,14 @@ function draw() {
 	
 	// Draw the worker path
 	drawWorkerPath();
+	
+	// Check whether we are running
+	if (running) {
+		
+		// Update the workers
+		updateWorkers();
+		
+	}
 	
 }
 
@@ -129,73 +149,96 @@ function drawWorkerPath() {
 // Function to deal with mouse clicks
 function mouseClicked() {
 	
-	// Check that the mouse click is in the grid
-	if (!((mouseX >= 0 && mouseX <= canvasSize) && (mouseY >= 0 && mouseY <= canvasSize))) {
-		
-		// Return
-		return;
-		
-	}
-		
-	// Get the x and y
-	var x = Math.floor(mouseX / gridSquareSize);
-	var y = Math.floor(mouseY / gridSquareSize);
+	// Check if the game is running
+	if (running) {
 	
-	// Check the mouse button
-	if (mouseButton === LEFT) {
-		
-		// Store whether we already have a worker at this location
-		var workerExists = false;
-		
-		// Check whether there is already a worker at the location
-		for (var i = 0; i < workers.length; i++) {
+		// Stop the game running
+		running = false;
+	
+	}
+	else {
+	
+		// Check that the mouse click is in the grid
+		if (!((mouseX >= 0 && mouseX <= canvasSize) && (mouseY >= 0 && mouseY <= canvasSize))) {
 			
-			// Check whether the worker is at (x,y) of mouse
-			if (workers[i].location.x == x && workers[i].location.y == y) {
+			// Return
+			return;
+			
+		}
+			
+		// Get the x and y
+		var x = Math.floor(mouseX / gridSquareSize);
+		var y = Math.floor(mouseY / gridSquareSize);
+		
+		// Check the mouse button
+		if (mouseButton === LEFT) {
+			
+			// Store whether we already have a worker at this location
+			var workerExists = false;
+			
+			// Check whether there is already a worker at the location
+			for (var i = 0; i < workers.length; i++) {
 				
-				// Check if there is a worker selected
-				if (currentWorker == -1) {
-				
-					// Select the worker
-					currentWorker = i;
+				// Check whether the worker is at (x,y) of mouse
+				if (workers[i].location.x == x && workers[i].location.y == y) {
+					
+					// Check if there is a worker selected
+					if (currentWorker == -1) {
+					
+						// Select the worker
+						currentWorker = i;
+					}
+					else {
+						
+						// Unselect the worker
+						currentWorker = -1;
+						
+					}
+						
+					// Set worker exists to true
+					workerExists = true;
+					
+					// Break
+					break;
+					
 				}
-				else {
+				
+			}
+			
+			// If there isn't already a worker and we haven't got a worker selected
+			if (!workerExists && currentWorker == -1) {
+				
+				// Create a new worker at the location
+				workers.push(Worker(Point(x,y), [Point(x,y)]));
+				
+			}
+			else if(!workerExists) {
+				
+				// Otherwise check if the (x,y) we have selected is adjacent to the (x,y) of the LAST path location of the current worker
+				if (equalOrAdjacent(Point(x,y), workers[currentWorker].path[workers[currentWorker].path.length - 1])) {
 					
-					// Unselect the worker
-					currentWorker = -1;
+					console.log("PATH VALID");
+					
+					// Add to the path
+					workers[currentWorker].path.push(Point(x,y));
 					
 				}
-					
-				// Set worker exists to true
-				workerExists = true;
-				
-				// Break
-				break;
 				
 			}
 			
 		}
+	}
+	
+}
+
+// Function to deal with key presses
+function keyPressed() {
+	
+	// Check if it was the space keyPressed
+	if (keyCode == SPACE) {
 		
-		// If there isn't already a worker and we haven't got a worker selected
-		if (!workerExists && currentWorker == -1) {
-			
-			// Create a new worker at the location
-			workers.push(Worker(Point(x,y), [Point(x,y)]));
-			
-		}
-		else if(!workerExists) {
-			
-			// Otherwise check if the (x,y) we have selected is adjacent to the (x,y) of the LAST path location of the current worker
-			if (equalOrAdjacent(Point(x,y), workers[currentWorker].path[workers[currentWorker].path.length - 1])) {
-				
-				console.log("PATH VALID");
-				
-				// Add to the path
-				workers[currentWorker].path.push(Point(x,y));
-				
-			}
-			
-		}
+		// Set running to true
+		running = true;
 		
 	}
 	
@@ -204,7 +247,7 @@ function mouseClicked() {
 // Function to return whether two points are at the same location
 function equalOrAdjacent(pointOne, pointTwo) {
 	
-	// Store whether they are adjacent
+	// Check whether they are adjacent
 	if (pointOne.x + 1 == pointTwo.x && pointOne.y == pointTwo.y) {
 		return true;
 	}
@@ -242,6 +285,31 @@ function Spawner(_location, _items, _frequency) {
 // Create a function to return a worker
 function Worker(_location, _path) {
 	
-	return {location: _location, currentPathLocation: 0, path: _path};
+	// Return a new worker object
+	return {location: _location, direction: 1, currentPathLocation: 0, path: _path};
+	
+}
+
+// Function to update the workers location
+function updateWorkers() {
+	
+	// For each worker
+	for (var i = 0; i < workers.length; i++) {
+		
+		// Move the worker to the next location
+		workers[i].currentPathLocation += workers[i].direction;
+		
+		// Update the position of this worker
+		workers[i].location = workers[i].path[workers[i].currentPathLocation];
+		
+		// Check whether this is the first or last location on the path
+		if (workers[i].currentPathLocation == 0 || workers[i].currentPathLocation == workers[i].path.length - 1) {
+			
+			// Reverse the location
+			workers[i].direction = -workers[i].direction;
+			
+		}
+		
+	}
 	
 }
