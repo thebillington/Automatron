@@ -10,6 +10,9 @@ var gridSquareSize;
 // List to hold the workers
 var workers;
 
+// Create a list of packages
+var packages;
+
 // Variable to hold the current worker
 var currentWorker;
 
@@ -29,8 +32,14 @@ function setup() {
 	// Set the grid size
 	gridSquareSize = canvasSize / gridSquares;
 	
-	// Empty the points
+	// Create an empty list to hold the workers
 	workers = [];
+	
+	// Create an empty list to hold the packages
+	packages = [];
+	
+	// Add a package
+	packages.push(Package(Point(4,2)));
 	
 	// Clear any workers
 	currentWorker = -1;
@@ -54,6 +63,9 @@ function draw() {
 	
 	// Draw the worker path
 	drawWorkerPath();
+	
+	// Draw the packages
+	drawPackages();
 	
 	// Check whether we are running
 	if (running) {
@@ -125,6 +137,19 @@ function drawWorkers() {
 		// Draw the gridsquare
 		drawGridSquare(x, y, c);
 		
+	}
+	
+}
+
+// Function to draw the packages
+function drawPackages() {
+	
+	// Look at each package
+	for (var i =0; i < packages.length; i++) {
+	
+		// Draw the package
+		drawGridSquare(packages[i].location.x, packages[i].location.y, color(102, 51, 0));
+	
 	}
 	
 }
@@ -311,6 +336,14 @@ function Worker(_location, _path) {
 	
 }
 
+// Function to create a package
+function Package(_location) {
+	
+	// Return a package object
+	return {location: _location};
+	
+}
+
 // Function to update the workers location
 function updateWorkers() {
 	
@@ -322,6 +355,9 @@ function updateWorkers() {
 		
 		// Check if there is a path
 		if (workers[i].path.length > 1) {
+			
+			// Check if the package has been moved
+			pushPackages(i);
 			
 			// Move the worker to the next location
 			workers[i].currentPathLocation += workers[i].direction;
@@ -351,6 +387,35 @@ function resetWorkers() {
 		workers[i].currentPathLocation = 0;
 		workers[i].direction = 1;
 		
+	}
+	
+}
+
+// Create a function to push the packages
+function pushPackages(worker) {
+	
+	// Look at each package
+	for (var i = 0; i < packages.length; i++) {
+		
+		// Check if the current worker has pushed the package
+		if (workers[worker].location.x == packages[i].location.x && workers[worker].location.y == packages[i].location.y) {
+			
+			// Get the current and previous package location
+			var currentLocation = workers[worker].path[workers[worker].currentPathLocation];
+			var prevLocation = workers[worker].path[workers[worker].currentPathLocation - 1];
+			
+			// Get the x and y direction to move
+			var dx = prevLocation.x - currentLocation.x;
+			var dy = prevLocation.y - currentLocation.y;
+			
+			console.log("Moving by: ("+dx+","+dy+")");
+			
+			// move the package
+			packages[i].location = Point(packages[i].location.x - dx, packages[i].location.y - dy);
+			
+			
+		}
+	
 	}
 	
 }
