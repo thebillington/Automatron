@@ -40,6 +40,7 @@ function setup() {
 	
 	// Add a package
 	packages.push(Package(Point(4,2)));
+	packages.push(Package(Point(2,2)));
 	
 	// Clear any workers
 	currentWorker = -1;
@@ -449,7 +450,7 @@ function pushPackages(worker) {
 			var prevLocation = workers[worker].path[workers[worker].currentPathLocation - 1];
 			
 			// Check whether the direction is negative
-			if (workers[worker].direction < 0 && (workers[worker].currentPathLocation > 0 && workers[worker].currentPathLocation < workers[worker].path.length - 1)) {
+			if (workers[worker].currentPathLocation == 0 || (workers[worker].direction < 0 && workers[worker].currentPathLocation < workers[worker].path.length - 1)) {
 				prevLocation = workers[worker].path[workers[worker].currentPathLocation + 1];
 				console.log("SWITCH");
 			}
@@ -457,8 +458,6 @@ function pushPackages(worker) {
 			// Get the x and y direction to move
 			var dx = (currentLocation.x - prevLocation.x);
 			var dy = (currentLocation.y - prevLocation.y);
-			
-			console.log("Moving by: ("+dx+","+dy+")");
 			
 			// move the package
 			packages[i].location = Point(packages[i].location.x + dx, packages[i].location.y + dy);
