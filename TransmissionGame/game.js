@@ -39,6 +39,9 @@ function draw() {
 	// Call the function to draw the points
 	drawWorkers();
 	
+	// Draw the worker path
+	drawWorkerPath();
+	
 }
 
 // Function to draw a grid
@@ -51,8 +54,8 @@ function drawGrid() {
 		for (var j = 0; j < gridSquares; j++) {
 			
 			// Calculate the x and y
-			var x = i * gridSquareSize;
-			var y = j * gridSquareSize;
+			var x = i;
+			var y = j;
 			
 			// Draw the grid square
 			drawGridSquare(x, y, color(255));
@@ -64,6 +67,10 @@ function drawGrid() {
 
 // Function to draw a grid square
 function drawGridSquare(x, y, colour) {
+	
+	// Calculate exact location on screen
+	x = x * gridSquareSize;
+	y = y * gridSquareSize;
 	
 	// Set the colour
 	fill(colour);
@@ -80,8 +87,8 @@ function drawWorkers() {
 	for(var i = 0; i < workers.length; i++) {
 		
 		// Get the x and y
-		var x = workers[i].location.x * gridSquareSize;
-		var y = workers[i].location.y * gridSquareSize;
+		var x = workers[i].location.x;
+		var y = workers[i].location.y;
 		
 		// Set the worker colour
 		var c = color(255, 0, 200);
@@ -96,6 +103,24 @@ function drawWorkers() {
 		
 		// Draw the gridsquare
 		drawGridSquare(x, y, c);
+		
+	}
+	
+}
+
+// Draw a worker path
+function drawWorkerPath() {
+	
+	// Check if there is a worker selected
+	if (currentWorker !== -1) {
+		
+		// Draw the workers path
+		for (var i = 1; i < workers[currentWorker].path.length; i++) {
+			
+			// Draw at the location
+			drawGridSquare(workers[currentWorker].path[i].x, workers[currentWorker].path[i].y, color(0, 200, 255));
+			
+		}
 		
 	}
 	
@@ -155,11 +180,46 @@ function mouseClicked() {
 		if (!workerExists && currentWorker == -1) {
 			
 			// Create a new worker at the location
-			workers.push(Worker(Point(x,y), []));
+			workers.push(Worker(Point(x,y), [Point(x,y)]));
+			
+		}
+		else if(!workerExists) {
+			
+			// Otherwise check if the (x,y) we have selected is adjacent to the (x,y) of the LAST path location of the current worker
+			if (equalOrAdjacent(Point(x,y), workers[currentWorker].path[workers[currentWorker].path.length - 1])) {
+				
+				console.log("PATH VALID");
+				
+				// Add to the path
+				workers[currentWorker].path.push(Point(x,y));
+				
+			}
 			
 		}
 		
 	}
+	
+}
+
+// Function to return whether two points are at the same location
+function equalOrAdjacent(pointOne, pointTwo) {
+	
+	// Store whether they are adjacent
+	if (pointOne.x + 1 == pointTwo.x && pointOne.y == pointTwo.y) {
+		return true;
+	}
+	if (pointOne.x - 1 == pointTwo.x && pointOne.y == pointTwo.y) {
+		return true;
+	}
+	if (pointOne.x == pointTwo.x && pointOne.y + 1 == pointTwo.y) {
+		return true;
+	}
+	if (pointOne.x == pointTwo.x && pointOne.y - 1 == pointTwo.y) {
+		return true;
+	}
+	
+	// Return whether they are equivalent
+	return pointOne.x == pointTwo.x && pointOne.y == pointTwo.y;
 	
 }
 
@@ -180,8 +240,8 @@ function Spawner(_location, _items, _frequency) {
 }
 
 // Create a function to return a worker
-function Worker(_location, _movement) {
+function Worker(_location, _path) {
 	
-	return {location: _location, currentMove: 0, movement: _movement};
+	return {location: _location, currentPathLocation: 0, path: _path};
 	
 }
