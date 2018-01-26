@@ -7,8 +7,11 @@ var gridSquares = 20;
 // Store the individual grid dimensions
 var gridSquareSize;
 
-// List to hold the point
-var points = [];
+// List to hold the workers
+var workers;
+
+// Variable to hold the current worker
+var currentWorker;
 
 // Setup function run before game starts
 function setup() {
@@ -18,6 +21,12 @@ function setup() {
 	
 	// Set the grid size
 	gridSquareSize = canvasSize / gridSquares;
+	
+	// Empty the points
+	workers = [];
+	
+	// Clear any workers
+	currentWorker = -1;
 		
 }
 
@@ -28,7 +37,7 @@ function draw() {
 	drawGrid();
 	
 	// Call the function to draw the points
-	drawPoints();
+	drawWorkers();
 	
 }
 
@@ -65,17 +74,28 @@ function drawGridSquare(x, y, colour) {
 }
 
 // Function to draw the points
-function drawPoints() {
+function drawWorkers() {
 	
 	// For each point
-	for(var i = 0; i < points.length; i++) {
+	for(var i = 0; i < workers.length; i++) {
 		
 		// Get the x and y
-		x = points[i].x * gridSquareSize;
-		y = points[i].y * gridSquareSize;
+		var x = workers[i].location.x * gridSquareSize;
+		var y = workers[i].location.y * gridSquareSize;
+		
+		// Set the worker colour
+		var c = color(255, 0, 200);
+		
+		// Check if this is the current worker
+		if (i == currentWorker) {
+			
+			// Set the colour
+			c = color(255, 0, 0);
+			
+		}
 		
 		// Draw the gridsquare
-		drawGridSquare(x, y, color(255, 0, 200));
+		drawGridSquare(x, y, c);
 		
 	}
 	
@@ -91,16 +111,53 @@ function mouseClicked() {
 		return;
 		
 	}
+		
+	// Get the x and y
+	var x = Math.floor(mouseX / gridSquareSize);
+	var y = Math.floor(mouseY / gridSquareSize);
 	
 	// Check the mouse button
 	if (mouseButton === LEFT) {
 		
-		// Get the x and y
-		var x = Math.floor(mouseX / gridSquareSize);
-		var y = Math.floor(mouseY / gridSquareSize);
+		// Store whether we already have a worker at this location
+		var workerExists = false;
 		
-		// Add a new point
-		points.push(Point(x,y));
+		// Check whether there is already a worker at the location
+		for (var i = 0; i < workers.length; i++) {
+			
+			// Check whether the worker is at (x,y) of mouse
+			if (workers[i].location.x == x && workers[i].location.y == y) {
+				
+				// Check if there is a worker selected
+				if (currentWorker == -1) {
+				
+					// Select the worker
+					currentWorker = i;
+				}
+				else {
+					
+					// Unselect the worker
+					currentWorker = -1;
+					
+				}
+					
+				// Set worker exists to true
+				workerExists = true;
+				
+				// Break
+				break;
+				
+			}
+			
+		}
+		
+		// If there isn't already a worker and we haven't got a worker selected
+		if (!workerExists && currentWorker == -1) {
+			
+			// Create a new worker at the location
+			workers.push(Worker(Point(x,y), []));
+			
+		}
 		
 	}
 	
@@ -111,5 +168,20 @@ function Point(_x, _y) {
 	
 	// Return a new point
 	return {x: _x, y: _y};
+	
+}
+
+// Create a function to create a spawner
+function Spawner(_location, _items, _frequency) {
+	
+	// Return a spawner object
+	return {location: _location, items: _items, frequency: _frequency, spawn: 0};
+	
+}
+
+// Create a function to return a worker
+function Worker(_location, _movement) {
+	
+	return {location: _location, currentMove: 0, movement: _movement};
 	
 }
