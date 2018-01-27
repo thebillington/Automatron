@@ -45,6 +45,7 @@ function setup() {
 	
 	// Add a package
 	packages.push(Package(Point(4,2)));
+	packages.push(Package(Point(3,2)));
 	packages.push(Package(Point(2,2)));
 	
 	// Clear any workers
@@ -54,7 +55,7 @@ function setup() {
 	running = false;
 	
 	// Set the frame rate
-	frameRate(5);
+	frameRate(1);
 		
 }
 
@@ -162,7 +163,7 @@ function drawPackages() {
 	for (var i =0; i < packages.length; i++) {
 	
 		// Draw the package
-		drawGridSquare(packages[i].location.x, packages[i].location.y, color(102, 51, 0));
+		drawGridSquare(packages[i].location.x, packages[i].location.y, color(222, 184, 135));
 	
 	}
 	
@@ -536,12 +537,47 @@ function pushPackages(worker) {
 			var dx = (currentLocation.x - prevLocation.x);
 			var dy = (currentLocation.y - prevLocation.y);
 			
-			// move the package
+			console.log("PUSHING PACKAGE: " + packages[i].location.x + "," + packages[i].location.y);
+			
+			// Move the package
 			packages[i].location = Point(packages[i].location.x + dx, packages[i].location.y + dy);
 			
+			console.log("PUSHED PACKAGE: " + packages[i].location.x + "," + packages[i].location.y);
 			
+			// Check if this package has pushed another
+			packagePushPackage(i, dx, dy);
+
 		}
 	
+	}
+	
+}
+
+// Function to check if a package has pushed another package
+function packagePushPackage(i, dx, dy) {
+			
+	// Check whether this package has pushed another package
+	for (var j = 0; j < packages.length; j++) {
+		
+		// If we aren't looking at the current package
+		if (i !== j) {
+			
+			// Check if the packages are on the same grid square
+			if (packages[i].location.x == packages[j].location.x && packages[i].location.y == packages[j].location.y) {
+				
+				console.log("PUSHING PACKAGE: " + packages[j].location.x + "," + packages[j].location.y);
+				
+				// Push the package
+				packages[j].location = Point(packages[j].location.x + dx, packages[j].location.y + dy);
+				
+				console.log("PUSHED PACKAGE: " + packages[j].location.x + "," + packages[j].location.y);
+				
+				// Check whether this package has pushed another package
+				packagePushPackage(j, dx, dy);
+			}
+			
+		}
+		
 	}
 	
 }
