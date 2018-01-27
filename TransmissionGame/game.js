@@ -56,6 +56,7 @@ function setup() {
 	
 	// Add a goal
 	goals.push(Goal(Point(7,7), color(222,184,135), "brown"));
+	goals.push(Goal(Point(15,12), color(218,165,32), "yellow"));
 	
 	// Create an empty list to hold the walls
 	walls = [];
@@ -631,12 +632,17 @@ function updatePackages() {
 		// Look at each goal
 		for (var j = goals.length - 1; j >= 0; j--) {
 			
-			// If the package is on the goal and colours match
-			if (overlap(packages[i].location, goals[j].location) && packages[i].name === goals[j].name) {
-				
-				// Delete the package
-				packages.splice(i, 1);
-				
+			// Check that the package exists
+			if (packages[i] !== undefined) {
+			
+				// If the package is on the goal and colours match
+				if (overlap(packages[i].location, goals[j].location) && packages[i].name === goals[j].name) {
+					
+					// Delete the package
+					packages.splice(i, 1);
+					
+				}
+			
 			}
 			
 		}
@@ -708,3 +714,5 @@ function packagePushPackage(i, dx, dy) {
 		}
 	}
 }
+
+// 
