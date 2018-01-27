@@ -2,7 +2,7 @@
 var canvasSize = 600;
 
 // Store the number of grid squares
-var gridSquares = 20;
+var gridSquares = 22;
 
 // Store the individual grid dimensions
 var gridSquareSize;
@@ -93,25 +93,25 @@ function draw() {
 	
 	// Clear the canvas
 	clear();
-	
+
 	// Call the function to draw the grid
 	drawGrid();
-	
+
 	// Draw the walls
 	drawWalls();
-	
+
 	// Call the function to draw the points
 	drawWorkers();
-	
+
 	// Draw the worker path
 	drawWorkerPath();
-	
+
 	// Draw the goals
 	drawGoals();
-	
+
 	// Draw the packages
 	drawPackages();
-	
+
 	// Check whether we are running
 	if (running) {
 		
@@ -119,7 +119,7 @@ function draw() {
 		updateWorkers();
 		
 	}
-	
+
 	// Update the packages
 	updatePackages();
 	
@@ -627,6 +627,19 @@ function updateWorkers() {
 		
 		}
 		
+		// Look at every other worker
+		for (var j = i + 1; j < workers.length; j++) {
+			
+			// Check if the workers have collided
+			if (overlap(workers[i],workers[j])) {
+				
+				// Crash the game
+				crash();
+				
+			}
+			
+		}
+		
 	}
 	
 }
@@ -796,14 +809,25 @@ function packageCrashed(p) {
 		if (overlap(packages[p].location, walls[i].location)) {
 			
 			// Crash the game
-			crashed = true;
-			running = false;
-			
-			// Set the background colour
-			backgroundColour = color(255,51,51);
+			crash();
 			
 		}
 		
 	}
+	
+}
+
+// Function to crash the game
+function crash() {
+			
+	// Crash the game
+	crashed = true;
+	running = false;
+	
+	// Set the background colour
+	backgroundColour = color(255,51,51);
+	
+	// Re-draw
+	draw();
 	
 }
