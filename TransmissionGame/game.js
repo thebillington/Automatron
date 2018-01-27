@@ -25,9 +25,13 @@ var currentWorker;
 // Store whether the game is currently running
 var running;
 
+// Store whether the game has crashed
+var crashed;
+
 // Keys
 var SPACE = 32;
 var C_KEY = 67;
+var D_KEY = 68;
 var L_KEY = 76;
 var R_KEY = 82;
 
@@ -69,6 +73,9 @@ function setup() {
 	
 	// Set running to false
 	running = false;
+	
+	// Set crashed flag to false
+	crashed = false;
 	
 	// Set the frame rate
 	frameRate(5);
@@ -293,6 +300,9 @@ function mouseClicked() {
 		// Check that the mouse click is in the grid
 		if (!((mouseX >= 0 && mouseX <= canvasSize) && (mouseY >= 0 && mouseY <= canvasSize))) {
 			
+			// Deselect workers
+			currentWorker = -1; 
+			
 			// Return
 			return;
 			
@@ -424,7 +434,7 @@ function keyPressed() {
 		
 	}
 	
-	// Check if it was the space key
+	// Check if it was the C key
 	if (keyCode == C_KEY) {
 		
 		// Check if there is a worker selected
@@ -432,6 +442,19 @@ function keyPressed() {
 			
 			// Clear the worker path
 			workers[currentWorker].path = [workers[currentWorker].path[0]];
+			
+		}
+	}
+	
+	// Check if it was the spacespace key
+	if (keyCode == D_KEY) {
+		
+		// Check if there is a worker selected
+		if (currentWorker != -1) {
+			
+			// Delete the worker
+			workers.splice(currentWorker, 1);
+			currentWorker = -1;
 			
 		}
 	}
@@ -592,6 +615,22 @@ function reset() {
 	running = false;
 	resetWorkers();
 	resetPackages();
+	crashed = false;
+	
+	// Create an empty list to hold the packages
+	packages = [];
+	
+	// Add a package
+	packages.push(Package(Point(4,2), color(222,184,135), "brown"));
+	packages.push(Package(Point(3,2), color(222,184,135), "brown"));
+	packages.push(Package(Point(2,2), color(218,165,32), "yellow"));
+	
+	// Create an empty list to hold the goals
+	goals = [];
+	
+	// Add a goal
+	goals.push(Goal(Point(7,7), color(222,184,135), "brown"));
+	goals.push(Goal(Point(15,12), color(218,165,32), "yellow"));
 	
 }
 
