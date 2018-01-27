@@ -13,6 +13,9 @@ var workers;
 // Create a list of packages
 var packages;
 
+// List to hold the walls
+var walls;
+
 // Variable to hold the current worker
 var currentWorker;
 
@@ -22,6 +25,8 @@ var running;
 // Keys
 var SPACE = 32;
 var C_KEY = 67;
+var L_KEY = 76;
+var R_KEY = 82;
 
 // Setup function run before game starts
 function setup() {
@@ -126,6 +131,14 @@ function drawWorkers() {
 		
 		// Set the worker colour
 		var c = color(255, 0, 200);
+		
+		// Check if the worker is a loop worker
+		if (workers[i].loop) {
+			
+			// Set the worker colour to green
+			c = color(0, 200, 88);
+			
+		}
 		
 		// Check if this is the current worker
 		if (i == currentWorker) {
@@ -307,9 +320,36 @@ function keyPressed() {
 			workers[currentWorker].path = [workers[currentWorker].path[0]];
 			
 		}
-		
 	}
 	
+	// Check if it was the l key
+	if (keyCode == L_KEY) {
+		
+		// Check if there is currently a worker
+		if (currentWorker !== -1) {
+			
+			// Check whether the workers last path location is adjacent to the first
+			if (equalOrAdjacent(workers[currentWorker].path[0], workers[currentWorker].path[workers[currentWorker].path.length - 1])) {
+				
+				// Set the worker as a loop worker
+				workers[currentWorker].loop = true;
+				
+			}
+			
+		}
+	}
+	
+	// Check if it was the r key
+	if (keyCode == R_KEY) {
+		
+		// Check if there is currently a worker
+		if (currentWorker !== -1) {
+			
+			// Set the current worker to be a repeater
+			workers[currentWorker].loop = false;
+			
+		}
+	}
 }
 
 // Function to return whether two points are at the same location
@@ -354,7 +394,7 @@ function Spawner(_location, _items, _frequency) {
 function Worker(_location, _path) {
 	
 	// Return a new worker object
-	return {location: _location, direction: 1, currentPathLocation: 0, path: _path};
+	return {location: _location, direction: 1, currentPathLocation: 0, path: _path, loop: false};
 	
 }
 
@@ -363,6 +403,14 @@ function Package(_location) {
 	
 	// Return a package object
 	return {location: _location, originalLocation: _location};
+	
+}
+
+// Function to create a wall
+function Wall(_location) {
+	
+	// Return the wall object
+	return {location: _location};
 	
 }
 
@@ -452,7 +500,6 @@ function pushPackages(worker) {
 			// Check whether the direction is negative
 			if (workers[worker].currentPathLocation == 0 || (workers[worker].direction < 0 && workers[worker].currentPathLocation < workers[worker].path.length - 1)) {
 				prevLocation = workers[worker].path[workers[worker].currentPathLocation + 1];
-				console.log("SWITCH");
 			}
 			
 			// Get the x and y direction to move
