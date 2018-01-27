@@ -35,11 +35,17 @@ var D_KEY = 68;
 var L_KEY = 76;
 var R_KEY = 82;
 
+// Store the background colour
+var backgroundColour;
+
 // Setup function run before game starts
 function setup() {
 		
 	// Create a canvas
 	createCanvas(canvasSize, canvasSize);
+	
+	// Set the background colour to white
+	backgroundColour = color(255);
 	
 	// Set the grid size
 	gridSquareSize = canvasSize / gridSquares;
@@ -84,6 +90,9 @@ function setup() {
 
 // Render function
 function draw() {
+	
+	// Clear the canvas
+	clear();
 	
 	// Call the function to draw the grid
 	drawGrid();
@@ -146,7 +155,7 @@ function drawGrid() {
 			var y = j;
 			
 			// Draw the grid square
-			drawGridSquare(x, y, color(255));
+			drawGridSquare(x, y, backgroundColour);
 		}
 		
 	}
@@ -426,11 +435,25 @@ function keyPressed() {
 	// Check if it was the space keyPressed
 	if (keyCode == SPACE) {
 		
-		// Set running to true
-		running = true;
+		// If the game hasn't crashed
+		if (!crashed) {
 		
-		// Deselect all workers
-		currentWorker = -1;
+			// Set running to true
+			running = true;
+			
+			// Deselect all workers
+			currentWorker = -1;
+			
+			// Set the background colour to running
+			backgroundColour = color(144,238,144);
+		
+		}
+		else {
+			
+			// Reset the game
+			reset();
+			
+		}
 		
 	}
 	
@@ -611,6 +634,9 @@ function updateWorkers() {
 // Function to reset() {
 function reset() {
 	
+	// Set the background to white
+	backgroundColour = color(255);
+	
 	// Reset everything to none running state
 	running = false;
 	resetWorkers();
@@ -725,6 +751,9 @@ function pushPackages(worker) {
 			
 			// Check if this package has pushed another
 			packagePushPackage(i, dx, dy);
+			
+			// Check if the package has crashed
+			packageCrashed(i);
 
 		}
 	
@@ -749,9 +778,32 @@ function packagePushPackage(i, dx, dy) {
 				
 				// Check whether this package has pushed another package
 				packagePushPackage(j, dx, dy);
+				
+				// Check if the package has crashed
+				packageCrashed(j);
 			}
 		}
 	}
 }
 
-// 
+// Function to check whether a package has crashed into a wall
+function packageCrashed(p) {
+	
+	// Look at each wall
+	for (var i = 0; i < walls.length; i++) {
+		
+		// If the package has crashed into a wall
+		if (overlap(packages[p].location, walls[i].location)) {
+			
+			// Crash the game
+			crashed = true;
+			running = false;
+			
+			// Set the background colour
+			backgroundColour = color(255,51,51);
+			
+		}
+		
+	}
+	
+}
