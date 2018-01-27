@@ -42,10 +42,13 @@ var R_KEY = 82;
 var backgroundColour;
 
 // Set the level file
-var levelFile = "levels/levelOne.txt";
+var levelFile;
 
 // Setup function run before game starts
 function setup() {
+	
+	// Set the level file
+	levelFile = "/ggj/" + document.getElementById("levelFile").innerHTML;
 	
 	// Load the level
 	loadLevel(levelFile);
@@ -1006,6 +1009,5 @@ function openLevel(levelText) {
 		
 		// Create a new package
 		spawners.push(Spawner(Point(x,y), it, f, Point(dx,dy), color(r,g,b), id));
-		
 	}
 }
