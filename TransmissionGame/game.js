@@ -57,6 +57,12 @@ function setup() {
 	// Add a goal
 	goals.push(Goal(Point(7,7), color(222,184,135), "brown"));
 	
+	// Create an empty list to hold the walls
+	walls = [];
+	
+	// Add some boundary walls
+	getBounds();
+	
 	// Clear any workers
 	currentWorker = -1;
 	
@@ -73,6 +79,9 @@ function draw() {
 	
 	// Call the function to draw the grid
 	drawGrid();
+	
+	// Draw the walls
+	drawWalls();
 	
 	// Call the function to draw the points
 	drawWorkers();
@@ -96,6 +105,22 @@ function draw() {
 	
 	// Update the packages
 	updatePackages();
+	
+}
+
+// Function to generate the bounding box
+function getBounds() {
+	
+	// Go round the border
+	for (var i = 0; i < gridSquares; i++) {
+		
+		// Add the walls
+		walls.push(Wall(Point(i,0)));
+		walls.push(Wall(Point(0,i)));
+		walls.push(Wall(Point(gridSquares-1,i)));
+		walls.push(Wall(Point(i,gridSquares-1)));
+		
+	}
 	
 }
 
@@ -218,6 +243,19 @@ function drawGoals() {
 	
 }
 
+// Function to draw the walls
+function drawWalls() {
+	
+	// Look at each wall
+	for (var i = 0; i < walls.length; i++) {
+		
+		// Draw the wall
+		drawGridSquare(walls[i].location.x, walls[i].location.y, color(0));
+		
+	}
+	
+}
+
 // Draw a worker path
 function drawWorkerPath() {
 	
@@ -262,6 +300,19 @@ function mouseClicked() {
 		// Get the x and y
 		var x = Math.floor(mouseX / gridSquareSize);
 		var y = Math.floor(mouseY / gridSquareSize);
+		
+		// Look at each wall
+		for (var i = 0; i < walls.length; i++) {
+			
+			// If the user clicked on a wall
+			if (walls[i].location.x == x && walls[i].location.y == y) {
+				
+				// Return
+				return;
+				
+			}
+			
+		}
 		
 		// Check the mouse button
 		if (mouseButton === LEFT) {
@@ -654,9 +705,6 @@ function packagePushPackage(i, dx, dy) {
 				// Check whether this package has pushed another package
 				packagePushPackage(j, dx, dy);
 			}
-			
 		}
-		
 	}
-	
 }
