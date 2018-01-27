@@ -47,15 +47,15 @@ function setup() {
 	packages = [];
 	
 	// Add a package
-	packages.push(Package(Point(4,2), color(222,184,135)));
-	packages.push(Package(Point(3,2), color(222,184,135)));
-	packages.push(Package(Point(2,2), color(222,184,135)));
+	packages.push(Package(Point(4,2), color(222,184,135), "brown"));
+	packages.push(Package(Point(3,2), color(222,184,135), "brown"));
+	packages.push(Package(Point(2,2), color(218,165,32), "yellow"));
 	
 	// Create an empty list to hold the goals
 	goals = [];
 	
 	// Add a goal
-	goals.push(Goal(Point(5,2), color(222,184,135)));
+	goals.push(Goal(Point(7,7), color(222,184,135), "brown"));
 	
 	// Clear any workers
 	currentWorker = -1;
@@ -64,7 +64,7 @@ function setup() {
 	running = false;
 	
 	// Set the frame rate
-	frameRate(1);
+	frameRate(5);
 		
 }
 
@@ -199,7 +199,7 @@ function drawPackages() {
 	for (var i =0; i < packages.length; i++) {
 	
 		// Draw the package
-		drawGridSquare(packages[i].location.x, packages[i].location.y, color(222, 184, 135));
+		drawGridSquare(packages[i].location.x, packages[i].location.y, packages[i].colour);
 	
 	}
 	
@@ -355,8 +355,7 @@ function mouseClicked() {
 			}
 			
 		}
-	}
-	
+	}	
 }
 
 // Function to deal with key presses
@@ -462,10 +461,10 @@ function Worker(_location, _path) {
 }
 
 // Function to create a package
-function Package(_location, _colour) {
+function Package(_location, _colour, _name) {
 	
 	// Return a package object
-	return {location: _location, originalLocation: _location, colour: _colour};
+	return {location: _location, originalLocation: _location, colour: _colour, name: _name};
 	
 }
 
@@ -478,10 +477,10 @@ function Wall(_location) {
 }
 
 // Function to create a goal
-function Goal(_location, _colour) {
+function Goal(_location, _colour, _name) {
 	
 	// Return the goal object
-	return {location: _location, colour: _colour};
+	return {location: _location, colour: _colour, name: _name};
 	
 }
 
@@ -581,8 +580,8 @@ function updatePackages() {
 		// Look at each goal
 		for (var j = goals.length - 1; j >= 0; j--) {
 			
-			// If the package is on the goal
-			if (overlap(packages[i].location, goals[j].location)) {
+			// If the package is on the goal and colours match
+			if (overlap(packages[i].location, goals[j].location) && packages[i].name === goals[j].name) {
 				
 				// Delete the package
 				packages.splice(i, 1);
