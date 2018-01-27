@@ -782,7 +782,6 @@ function updatePackages() {
 		}
 		
 	}
-	
 }
 
 // Function to check string equality
