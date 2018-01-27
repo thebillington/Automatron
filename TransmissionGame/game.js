@@ -16,6 +16,9 @@ var packages;
 // List to hold the walls
 var walls;
 
+// List to hold the goals
+var goals;
+
 // Variable to hold the current worker
 var currentWorker;
 
@@ -44,9 +47,15 @@ function setup() {
 	packages = [];
 	
 	// Add a package
-	packages.push(Package(Point(4,2)));
-	packages.push(Package(Point(3,2)));
-	packages.push(Package(Point(2,2)));
+	packages.push(Package(Point(4,2), color(222,184,135)));
+	packages.push(Package(Point(3,2), color(222,184,135)));
+	packages.push(Package(Point(2,2), color(222,184,135)));
+	
+	// Create an empty list to hold the goals
+	goals = [];
+	
+	// Add a goal
+	goals.push(Goal(Point(5,2), color(222,184,135)));
 	
 	// Clear any workers
 	currentWorker = -1;
@@ -71,6 +80,9 @@ function draw() {
 	// Draw the worker path
 	drawWorkerPath();
 	
+	// Draw the goals
+	drawGoals();
+	
 	// Draw the packages
 	drawPackages();
 	
@@ -81,6 +93,9 @@ function draw() {
 		updateWorkers();
 		
 	}
+	
+	// Update the packages
+	updatePackages();
 	
 }
 
@@ -118,6 +133,27 @@ function drawGridSquare(x, y, colour) {
 	// Draw the quad
 	quad(x,y, x+gridSquareSize,y, x+gridSquareSize,y+gridSquareSize, x,y+gridSquareSize);
 	
+}
+
+// Function to draw a goal
+function drawGoal(x, y, colour) {
+	
+	// Draw the grid square
+	drawGridSquare(x, y, colour);
+	
+	// Calculate exact location on screen
+	x = x * gridSquareSize;
+	y = y * gridSquareSize;
+	
+	// Set the hole percentage
+	var goalPercent = 5;
+	
+	// Draw the hole
+	line(x,y, x+gridSquareSize/2-gridSquareSize/goalPercent,y+gridSquareSize/2-gridSquareSize/goalPercent);
+	line(x+gridSquareSize,y, x+gridSquareSize/2+gridSquareSize/goalPercent,y+gridSquareSize/2-gridSquareSize/goalPercent);
+	line(x+gridSquareSize,y+gridSquareSize, x+gridSquareSize/2+gridSquareSize/goalPercent,y+gridSquareSize/2+gridSquareSize/goalPercent);
+	line(x,y+gridSquareSize, x+gridSquareSize/2-gridSquareSize/goalPercent,y+gridSquareSize/2+gridSquareSize/goalPercent);
+	quad(x+gridSquareSize/2-gridSquareSize/goalPercent,y+gridSquareSize/2-gridSquareSize/goalPercent, x+gridSquareSize/2+gridSquareSize/goalPercent,y+gridSquareSize/2-gridSquareSize/goalPercent, x+gridSquareSize/2+gridSquareSize/goalPercent,y+gridSquareSize/2+gridSquareSize/goalPercent, x+gridSquareSize/2-gridSquareSize/goalPercent,y+gridSquareSize/2+gridSquareSize/goalPercent);
 }
 
 // Function to draw the points
@@ -165,6 +201,19 @@ function drawPackages() {
 		// Draw the package
 		drawGridSquare(packages[i].location.x, packages[i].location.y, color(222, 184, 135));
 	
+	}
+	
+}
+
+// Function to draw the goals
+function drawGoals() {
+	
+	// For each goal
+	for (var i = 0; i < goals.length; i++) {
+		
+		// Draw the goal
+		drawGoal(goals[i].location.x, goals[i].location.y, goals[i].colour);
+		
 	}
 	
 }
@@ -413,10 +462,10 @@ function Worker(_location, _path) {
 }
 
 // Function to create a package
-function Package(_location) {
+function Package(_location, _colour) {
 	
 	// Return a package object
-	return {location: _location, originalLocation: _location};
+	return {location: _location, originalLocation: _location, colour: _colour};
 	
 }
 
@@ -425,6 +474,14 @@ function Wall(_location) {
 	
 	// Return the wall object
 	return {location: _location};
+	
+}
+
+// Function to create a goal
+function Goal(_location, _colour) {
+	
+	// Return the goal object
+	return {location: _location, colour: _colour};
 	
 }
 
@@ -515,6 +572,37 @@ function resetPackages() {
 	
 }
 
+// Function to update packages
+function updatePackages() {
+	
+	// Look at each package
+	for (var i = packages.length - 1; i >= 0; i--) {
+		
+		// Look at each goal
+		for (var j = goals.length - 1; j >= 0; j--) {
+			
+			// If the package is on the goal
+			if (overlap(packages[i].location, goals[j].location)) {
+				
+				// Delete the package
+				packages.splice(i, 1);
+				
+			}
+			
+		}
+		
+	}
+	
+}
+
+// Function to check if two points overlap
+function overlap(pointOne, pointTwo) {
+	
+	// Return whether they overlap
+	return pointOne.x == pointTwo.x && pointOne.y == pointTwo.y;
+	
+}
+
 // Create a function to push the packages
 function pushPackages(worker) {
 	
@@ -537,12 +625,8 @@ function pushPackages(worker) {
 			var dx = (currentLocation.x - prevLocation.x);
 			var dy = (currentLocation.y - prevLocation.y);
 			
-			console.log("PUSHING PACKAGE: " + packages[i].location.x + "," + packages[i].location.y);
-			
 			// Move the package
 			packages[i].location = Point(packages[i].location.x + dx, packages[i].location.y + dy);
-			
-			console.log("PUSHED PACKAGE: " + packages[i].location.x + "," + packages[i].location.y);
 			
 			// Check if this package has pushed another
 			packagePushPackage(i, dx, dy);
@@ -565,12 +649,8 @@ function packagePushPackage(i, dx, dy) {
 			// Check if the packages are on the same grid square
 			if (packages[i].location.x == packages[j].location.x && packages[i].location.y == packages[j].location.y) {
 				
-				console.log("PUSHING PACKAGE: " + packages[j].location.x + "," + packages[j].location.y);
-				
 				// Push the package
 				packages[j].location = Point(packages[j].location.x + dx, packages[j].location.y + dy);
-				
-				console.log("PUSHED PACKAGE: " + packages[j].location.x + "," + packages[j].location.y);
 				
 				// Check whether this package has pushed another package
 				packagePushPackage(j, dx, dy);
