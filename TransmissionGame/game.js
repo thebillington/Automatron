@@ -43,7 +43,10 @@ var backgroundColour;
 
 // Setup function run before game starts
 function setup() {
-		
+	
+	// Load the level
+	loadLevel("levels/tutorialOne.txt");
+	
 	// Create a canvas
 	createCanvas(canvasSize, canvasSize);
 	
@@ -62,21 +65,14 @@ function setup() {
 	// Create an empty list to hold the goals
 	goals = [];
 	
-	// Add a goal
-	goals.push(Goal(Point(15,12), color(218,165,32), "yellow"));
-	
 	// Create an empty list to hold the walls
 	walls = [];
 	
 	// Create an empty list of spawners
 	spawners = [];
 	
-	// Add a spawner
-	spawners.push(Spawner(Point(5,5), 10, 7, Point(0,1), color(218,165,32), "yellow"));
-	
 	// Add some boundary walls
 	getBounds();
-	addWalls();
 	
 	// Clear any workers
 	currentWorker = -1;
@@ -90,60 +86,6 @@ function setup() {
 	// Set the frame rate
 	frameRate(5);
 		
-}
-
-// Function to add in walls for the level
-function addWalls() {
-	
-	walls.push(Wall(Point(4,5)));
-	walls.push(Wall(Point(3,5)));
-	walls.push(Wall(Point(3,6)));
-	walls.push(Wall(Point(3,7)));
-	walls.push(Wall(Point(4,7)));
-	walls.push(Wall(Point(5,7)));
-	walls.push(Wall(Point(6,7)));
-	walls.push(Wall(Point(7,7)));
-	walls.push(Wall(Point(8,7)));
-	walls.push(Wall(Point(8,8)));
-	walls.push(Wall(Point(8,9)));
-	walls.push(Wall(Point(7,9)));
-	walls.push(Wall(Point(7,10)));
-	walls.push(Wall(Point(7,11)));
-	walls.push(Wall(Point(8,11)));
-	walls.push(Wall(Point(9,11)));
-	walls.push(Wall(Point(10,11)));
-	walls.push(Wall(Point(11,11)));
-	walls.push(Wall(Point(12,11)));
-	walls.push(Wall(Point(11,12)));
-	walls.push(Wall(Point(11,13)));
-	walls.push(Wall(Point(12,13)));
-	walls.push(Wall(Point(13,13)));
-	walls.push(Wall(Point(14,13)));
-	walls.push(Wall(Point(15,13)));
-	walls.push(Wall(Point(16,13)));
-	walls.push(Wall(Point(16,12)));
-	walls.push(Wall(Point(16,11)));
-	walls.push(Wall(Point(15,11)));
-	walls.push(Wall(Point(14,11)));
-	walls.push(Wall(Point(14,10)));
-	walls.push(Wall(Point(14,9)));
-	walls.push(Wall(Point(14,8)));
-	walls.push(Wall(Point(13,8)));
-	walls.push(Wall(Point(12,8)));
-	walls.push(Wall(Point(12,9)));
-	walls.push(Wall(Point(11,9)));
-	walls.push(Wall(Point(10,9)));
-	walls.push(Wall(Point(10,8)));
-	walls.push(Wall(Point(10,7)));
-	walls.push(Wall(Point(10,6)));
-	walls.push(Wall(Point(10,5)));
-	walls.push(Wall(Point(10,4)));
-	walls.push(Wall(Point(9,4)));
-	walls.push(Wall(Point(8,4)));
-	walls.push(Wall(Point(8,5)));
-	walls.push(Wall(Point(7,5)));
-	walls.push(Wall(Point(6,5)));
-	
 }
 
 // Render function
@@ -782,14 +724,8 @@ function reset() {
 	resetPackages();
 	crashed = false;
 	
-	// Create an empty list to hold the packages
-	packages = [];
-	
-	// Create an empty list of spawners
-	spawners = [];
-	
-	// Add a spawner
-	spawners.push(Spawner(Point(5,5), 10, 7, Point(0,1), color(218,165,32), "yellow"));
+	// Reload the level
+	loadLevel("levels/tutorialOne.txt");
 	
 }
 
@@ -832,9 +768,9 @@ function updatePackages() {
 			
 			// Check that the package exists
 			if (packages[i] !== undefined) {
-			
+				
 				// If the package is on the goal and colours match
-				if (overlap(packages[i].location, goals[j].location) && packages[i].name === goals[j].name) {
+				if (overlap(packages[i].location, goals[j].location) && strEquality(packages[i].name, goals[j].name)) {
 					
 					// Delete the package
 					packages.splice(i, 1);
@@ -849,11 +785,23 @@ function updatePackages() {
 	
 }
 
+// Function to check string equality
+function strEquality(stOne, stTwo) {
+	
+	// Remove white space
+	stOne=stOne.trim();
+	stTwo=stTwo.trim();
+	
+	// Check equality
+	return stOne == stTwo;
+	
+}
+
 // Function to check if two points overlap
 function overlap(pointOne, pointTwo) {
 	
 	// Return whether they overlap
-	return pointOne.x == pointTwo.x && pointOne.y == pointTwo.y;
+	return pointOne.x === pointTwo.x && pointOne.y === pointTwo.y;
 	
 }
 
@@ -949,5 +897,92 @@ function crash() {
 	
 	// Re-draw
 	draw();
+	
+}
+
+//Create a function to load in from file
+function loadLevel(levelName) {
+    
+    //First create a http request and fetch the file
+    var client = new XMLHttpRequest();
+    client.open('GET', levelName, true);
+    client.send();
+    
+    //When the file is received parse the text
+    client.onreadystatechange = function() {
+        
+        //If the client is ready
+        if (client.readyState == 4) {
+            
+            //If fetching was successful
+            if(client.status == 200) {
+                
+                //Open the level
+                var levelText = client.responseText;
+                openLevel(levelText);
+				
+            } else {
+                //Log failure
+                alert("Failed to load level from server.")
+            }
+        }
+    }
+}
+
+// Function to load level data from a text file
+function openLevel(levelText) {
+	
+	// Create an empty list to hold the packages
+	packages = [];
+	
+	// Create an empty list to hold the goals
+	goals = [];
+	
+	// Create an empty list to hold the walls
+	walls = [];
+	
+	// Create an empty list of spawners
+	spawners = [];
+	
+	// Load the level data
+	var levelData = levelText.split("\n");
+	
+	// Check the number of packages, goals, spawners and walls
+	var noPackages = parseInt(levelData[0]);
+	var noGoals = parseInt(levelData[1]);
+	
+	// Get the packages
+	for (var i = 4; i < 4 + noPackages; i++) {
+		
+		// Get the package data
+		var packageData = levelData[i].split(" ");
+		var x = parseInt(packageData[0]);
+		var y = parseInt(packageData[1]);
+		var r = parseInt(packageData[2]);
+		var g = parseInt(packageData[3]);
+		var b = parseInt(packageData[4]);
+		var name = packageData[5];
+		
+		// Create a new package
+		packages.push(Package(Point(x,y), color(r,g,b), name));
+		
+	}
+	
+	// Get the packages
+	for (var i = 4 + noPackages; i < 4 + noPackages + noGoals; i++) {
+		
+		// Get the goal data
+		var goalData = levelData[i].split(" ");
+		var x = parseInt(goalData[0]);
+		var y = parseInt(goalData[1]);
+		var r = parseInt(goalData[2]);
+		var g = parseInt(goalData[3]);
+		var b = parseInt(goalData[4]);
+		var name = goalData[5];
+		
+		// Create a new package
+		goals.push(Goal(Point(x,y), color(r,g,b), name));
+		
+	}
 	
 }
