@@ -281,6 +281,19 @@ function mouseClicked() {
 					// Add to the path
 					workers[currentWorker].path.push(Point(x,y));
 					
+					// If the worker is a loop worker
+					if (workers[currentWorker].loop) {
+						
+						// Check whether this path still allows them to loop
+						if (!equalOrAdjacent(workers[currentWorker].path[0], workers[currentWorker].path[workers[currentWorker].path.length - 1])) {
+							
+							// Set the worker as a non-loop worker
+							workers[currentWorker].loop = false;
+							
+						}
+						
+					}
+					
 				}
 				else {
 					
