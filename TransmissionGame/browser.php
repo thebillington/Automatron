@@ -7,7 +7,7 @@ echo "<h1>LEVELS</h1>";
 
 foreach ($files as $f) {
 	
-	echo "<li><a href='/ggj/play.php?lvl=".$f."'>".$f."</a></li>";
+	echo "<li><a href='/play.php?lvl=".$f."'>".$f."</a></li>";
 	
 }
 

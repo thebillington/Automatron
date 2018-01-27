@@ -48,7 +48,7 @@ var levelFile;
 function setup() {
 	
 	// Set the level file
-	levelFile = "/ggj/" + document.getElementById("levelFile").innerHTML;
+	levelFile = "http://automatron.co.uk/" + document.getElementById("levelFile").innerHTML;
 	
 	// Load the level
 	loadLevel(levelFile);
