@@ -432,11 +432,28 @@ function updateWorkers() {
 			// Move the worker to the next location
 			workers[i].currentPathLocation += workers[i].direction;
 			
-			// Check whether this is the first or last location on the path
-			if (workers[i].currentPathLocation == 0 || workers[i].currentPathLocation == workers[i].path.length - 1) {
+			// Check if the workers is a loop worker
+			if (!workers[i].loop) {
+			
+				// Check whether this is the first or last location on the path
+				if (workers[i].currentPathLocation == 0 || workers[i].currentPathLocation == workers[i].path.length - 1) {
+					
+					// Reverse the location 
+					workers[i].direction = -workers[i].direction;
+					
+				}
+			
+			}
+			else {
 				
-				// Reverse the location 
-				workers[i].direction = -workers[i].direction;
+				// I the worker is a looper, check if we are at the last location
+				if (workers[i].currentPathLocation == workers[i].path.length) {
+					
+					// Set the location back to 0
+					workers[i].currentPathLocation = 0;
+					
+				}
+				
 				
 			}
 		
