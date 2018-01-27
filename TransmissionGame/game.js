@@ -41,11 +41,14 @@ var R_KEY = 82;
 // Store the background colour
 var backgroundColour;
 
+// Set the level file
+var levelFile = "levels/levelOne.txt";
+
 // Setup function run before game starts
 function setup() {
 	
 	// Load the level
-	loadLevel("levels/tutorialOne.txt");
+	loadLevel(levelFile);
 	
 	// Create a canvas
 	createCanvas(canvasSize, canvasSize);
@@ -578,10 +581,10 @@ function Point(_x, _y) {
 }
 
 // Create a function to create a spawner
-function Spawner(_location, _items, _frequency, _direction, _colour, _name) {
+function Spawner(_location, _items, _frequency, _direction, _colour, _id) {
 	
 	// Return a spawner object
-	return {location: _location, direction: _direction, items: _items, frequency: _frequency, spawn: 0, name: _name, colour: _colour};
+	return {location: _location, direction: _direction, items: _items, frequency: _frequency, spawn: 0, id: _id, colour: _colour};
 	
 }
 
@@ -594,10 +597,10 @@ function Worker(_location, _path) {
 }
 
 // Function to create a package
-function Package(_location, _colour, _name) {
+function Package(_location, _colour, _id) {
 	
 	// Return a package object
-	return {location: _location, originalLocation: _location, colour: _colour, name: _name};
+	return {location: _location, originalLocation: _location, colour: _colour, id: _id};
 	
 }
 
@@ -610,10 +613,10 @@ function Wall(_location) {
 }
 
 // Function to create a goal
-function Goal(_location, _colour, _name) {
+function Goal(_location, _colour, _id) {
 	
 	// Return the goal object
-	return {location: _location, colour: _colour, name: _name};
+	return {location: _location, colour: _colour, id: _id};
 	
 }
 
@@ -689,7 +692,7 @@ function updateSpawners() {
 		if (spawners[i].spawn === 0 && spawners[i].items > 0) {
 			
 			// Spawn a new package
-			packages.push(Package(Point(spawners[i].location.x + spawners[i].direction.x, spawners[i].location.y + spawners[i].direction.y), spawners[i].colour, spawners[i].name));
+			packages.push(Package(Point(spawners[i].location.x + spawners[i].direction.x, spawners[i].location.y + spawners[i].direction.y), spawners[i].colour, spawners[i].id));
 			
 			// Check if we have pushed any packages
 			packagePushPackage(packages.length - 1, spawners[i].direction.x, spawners[i].direction.y);
@@ -725,7 +728,7 @@ function reset() {
 	crashed = false;
 	
 	// Reload the level
-	loadLevel("levels/tutorialOne.txt");
+	loadLevel(levelFile);
 	
 }
 
@@ -770,30 +773,15 @@ function updatePackages() {
 			if (packages[i] !== undefined) {
 				
 				// If the package is on the goal and colours match
-				if (overlap(packages[i].location, goals[j].location) && strEquality(packages[i].name, goals[j].name)) {
+				if (overlap(packages[i].location, goals[j].location) && packages[i].id == goals[j].id) {
 					
 					// Delete the package
 					packages.splice(i, 1);
 					
 				}
-			
 			}
-			
 		}
-		
 	}
-}
-
-// Function to check string equality
-function strEquality(stOne, stTwo) {
-	
-	// Remove white space
-	stOne=stOne.trim();
-	stTwo=stTwo.trim();
-	
-	// Check equality
-	return stOne == stTwo;
-	
 }
 
 // Function to check if two points overlap
@@ -939,6 +927,7 @@ function openLevel(levelText) {
 	
 	// Create an empty list to hold the walls
 	walls = [];
+	getBounds();
 	
 	// Create an empty list of spawners
 	spawners = [];
@@ -949,6 +938,8 @@ function openLevel(levelText) {
 	// Check the number of packages, goals, spawners and walls
 	var noPackages = parseInt(levelData[0]);
 	var noGoals = parseInt(levelData[1]);
+	var noWalls = parseInt(levelData[2]);
+	var noSpawners = parseInt(levelData[3]);
 	
 	// Get the packages
 	for (var i = 4; i < 4 + noPackages; i++) {
@@ -960,14 +951,14 @@ function openLevel(levelText) {
 		var r = parseInt(packageData[2]);
 		var g = parseInt(packageData[3]);
 		var b = parseInt(packageData[4]);
-		var name = packageData[5];
+		var id = parseInt(packageData[5]);
 		
 		// Create a new package
-		packages.push(Package(Point(x,y), color(r,g,b), name));
+		packages.push(Package(Point(x,y), color(r,g,b), id));
 		
 	}
 	
-	// Get the packages
+	// Get the goals
 	for (var i = 4 + noPackages; i < 4 + noPackages + noGoals; i++) {
 		
 		// Get the goal data
@@ -977,11 +968,44 @@ function openLevel(levelText) {
 		var r = parseInt(goalData[2]);
 		var g = parseInt(goalData[3]);
 		var b = parseInt(goalData[4]);
-		var name = goalData[5];
+		var id = parseInt(goalData[5]);
 		
 		// Create a new package
-		goals.push(Goal(Point(x,y), color(r,g,b), name));
+		goals.push(Goal(Point(x,y), color(r,g,b), id));
 		
 	}
 	
+	// Get the walls
+	for (var i = 4 + noPackages + noGoals; i < 4 + noPackages + noGoals + noWalls; i++) {
+		
+		// Get the goal data
+		var goalData = levelData[i].split(" ");
+		var x = parseInt(goalData[0]);
+		var y = parseInt(goalData[1]);
+		
+		// Create a new package
+		walls.push(Wall(Point(x,y)));
+		
+	}
+	
+	// Get the spawners
+	for (var i = 4 + noPackages + noGoals + noWalls; i < 4 + noPackages + noGoals + noWalls + noSpawners; i++) {
+		
+		// Get the goal data
+		var goalData = levelData[i].split(" ");
+		var x = parseInt(goalData[0]);
+		var y = parseInt(goalData[1]);
+		var r = parseInt(goalData[2]);
+		var g = parseInt(goalData[3]);
+		var b = parseInt(goalData[4]);
+		var dx = parseInt(goalData[5]);
+		var dy = parseInt(goalData[6]);
+		var it = parseInt(goalData[7]);
+		var f = parseInt(goalData[8]);
+		var id = parseInt(goalData[9]);
+		
+		// Create a new package
+		spawners.push(Spawner(Point(x,y), it, f, Point(dx,dy), color(r,g,b), id));
+		
+	}
 }
