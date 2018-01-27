@@ -19,6 +19,9 @@ var walls;
 // List to hold the goals
 var goals;
 
+// List to hold all of the crate spawners
+var spawners;
+
 // Variable to hold the current worker
 var currentWorker;
 
@@ -56,23 +59,24 @@ function setup() {
 	// Create an empty list to hold the packages
 	packages = [];
 	
-	// Add a package
-	packages.push(Package(Point(4,2), color(222,184,135), "brown"));
-	packages.push(Package(Point(3,2), color(222,184,135), "brown"));
-	packages.push(Package(Point(2,2), color(218,165,32), "yellow"));
-	
 	// Create an empty list to hold the goals
 	goals = [];
 	
 	// Add a goal
-	goals.push(Goal(Point(7,7), color(222,184,135), "brown"));
 	goals.push(Goal(Point(15,12), color(218,165,32), "yellow"));
 	
 	// Create an empty list to hold the walls
 	walls = [];
 	
+	// Create an empty list of spawners
+	spawners = [];
+	
+	// Add a spawner
+	spawners.push(Spawner(Point(5,5), 10, 7, Point(0,1), color(218,165,32), "yellow"));
+	
 	// Add some boundary walls
 	getBounds();
+	addWalls();
 	
 	// Clear any workers
 	currentWorker = -1;
@@ -88,8 +92,73 @@ function setup() {
 		
 }
 
+// Function to add in walls for the level
+function addWalls() {
+	
+	walls.push(Wall(Point(4,5)));
+	walls.push(Wall(Point(3,5)));
+	walls.push(Wall(Point(3,6)));
+	walls.push(Wall(Point(3,7)));
+	walls.push(Wall(Point(4,7)));
+	walls.push(Wall(Point(5,7)));
+	walls.push(Wall(Point(6,7)));
+	walls.push(Wall(Point(7,7)));
+	walls.push(Wall(Point(8,7)));
+	walls.push(Wall(Point(8,8)));
+	walls.push(Wall(Point(8,9)));
+	walls.push(Wall(Point(7,9)));
+	walls.push(Wall(Point(7,10)));
+	walls.push(Wall(Point(7,11)));
+	walls.push(Wall(Point(8,11)));
+	walls.push(Wall(Point(9,11)));
+	walls.push(Wall(Point(10,11)));
+	walls.push(Wall(Point(11,11)));
+	walls.push(Wall(Point(12,11)));
+	walls.push(Wall(Point(11,12)));
+	walls.push(Wall(Point(11,13)));
+	walls.push(Wall(Point(12,13)));
+	walls.push(Wall(Point(13,13)));
+	walls.push(Wall(Point(14,13)));
+	walls.push(Wall(Point(15,13)));
+	walls.push(Wall(Point(16,13)));
+	walls.push(Wall(Point(16,12)));
+	walls.push(Wall(Point(16,11)));
+	walls.push(Wall(Point(15,11)));
+	walls.push(Wall(Point(14,11)));
+	walls.push(Wall(Point(14,10)));
+	walls.push(Wall(Point(14,9)));
+	walls.push(Wall(Point(14,8)));
+	walls.push(Wall(Point(13,8)));
+	walls.push(Wall(Point(12,8)));
+	walls.push(Wall(Point(12,9)));
+	walls.push(Wall(Point(11,9)));
+	walls.push(Wall(Point(10,9)));
+	walls.push(Wall(Point(10,8)));
+	walls.push(Wall(Point(10,7)));
+	walls.push(Wall(Point(10,6)));
+	walls.push(Wall(Point(10,5)));
+	walls.push(Wall(Point(10,4)));
+	walls.push(Wall(Point(9,4)));
+	walls.push(Wall(Point(8,4)));
+	walls.push(Wall(Point(8,5)));
+	walls.push(Wall(Point(7,5)));
+	walls.push(Wall(Point(6,5)));
+	
+}
+
 // Render function
 function draw() {
+
+	// Check whether we are running
+	if (running) {
+		
+		// Update the spawners
+		updateSpawners();
+		
+		// Update the workers
+		updateWorkers();
+		
+	}
 	
 	// Clear the canvas
 	clear();
@@ -108,17 +177,12 @@ function draw() {
 
 	// Draw the goals
 	drawGoals();
+	
+	// Draw the spawners
+	drawSpawners();
 
 	// Draw the packages
 	drawPackages();
-
-	// Check whether we are running
-	if (running) {
-		
-		// Update the workers
-		updateWorkers();
-		
-	}
 
 	// Update the packages
 	updatePackages();
@@ -215,7 +279,7 @@ function drawWorkers() {
 		if (workers[i].loop) {
 			
 			// Set the worker colour to green
-			c = color(0, 200, 88);
+			c = color(0, 51, 102);
 			
 		}
 		
@@ -291,6 +355,35 @@ function drawWorkerPath() {
 			}
 		}
 	}
+}
+
+// Function to draw the spawners
+function drawSpawners() {
+	
+	// For each goal
+	for (var i = 0; i < spawners.length; i++) {
+		
+		// Draw the goal
+		drawSpawner(spawners[i].location.x, spawners[i].location.y, spawners[i].colour, spawners[i].direction.x, spawners[i].direction.y);
+		
+	}
+}
+
+// Function to draw a spawner
+function drawSpawner(x, y, colour, dx, dy) {
+	
+	// Draw the grid square
+	drawGridSquare(x, y, colour);
+	
+	// Calculate exact location on screen
+	x = x * gridSquareSize;
+	y = y * gridSquareSize;
+	
+	// Fill in black
+	fill(0);
+	
+	// Set the hole percentage
+	ellipse(x+gridSquareSize/2+(dx*gridSquareSize/5), y+gridSquareSize/2+(dy*gridSquareSize/5), gridSquareSize/10, gridSquareSize/10);
 	
 }
 
@@ -307,7 +400,7 @@ function mouseClicked() {
 	else {
 	
 		// Check that the mouse click is in the grid
-		if (!((mouseX >= 0 && mouseX <= canvasSize) && (mouseY >= 0 && mouseY <= canvasSize))) {
+		if (crashed || !((mouseX >= 0 && mouseX <= canvasSize) && (mouseY >= 0 && mouseY <= canvasSize))) {
 			
 			// Deselect workers
 			currentWorker = -1; 
@@ -543,10 +636,10 @@ function Point(_x, _y) {
 }
 
 // Create a function to create a spawner
-function Spawner(_location, _items, _frequency) {
+function Spawner(_location, _items, _frequency, _direction, _colour, _name) {
 	
 	// Return a spawner object
-	return {location: _location, items: _items, frequency: _frequency, spawn: 0};
+	return {location: _location, direction: _direction, items: _items, frequency: _frequency, spawn: 0, name: _name, colour: _colour};
 	
 }
 
@@ -631,12 +724,45 @@ function updateWorkers() {
 		for (var j = i + 1; j < workers.length; j++) {
 			
 			// Check if the workers have collided
-			if (overlap(workers[i],workers[j])) {
+			if (overlap(workers[i].location,workers[j].location)) {
 				
 				// Crash the game
 				crash();
 				
 			}
+			
+		}
+		
+	}
+	
+}
+
+// Function to update spawners
+function updateSpawners() {
+	
+	// Look at each spawner
+	for (var i = 0; i < spawners.length; i++) {
+		
+		// Check if the spawner is ready to spawn
+		if (spawners[i].spawn === 0 && spawners[i].items > 0) {
+			
+			// Spawn a new package
+			packages.push(Package(Point(spawners[i].location.x + spawners[i].direction.x, spawners[i].location.y + spawners[i].direction.y), spawners[i].colour, spawners[i].name));
+			
+			// Check if we have pushed any packages
+			packagePushPackage(packages.length - 1, spawners[i].direction.x, spawners[i].direction.y);
+			
+			// Reset the spawn frequency
+			spawners[i].spawn = spawners[i].frequency;
+			
+			// Remove one the number of items left
+			spawners[i].items--;
+			
+		}
+		else {
+			
+			// Tick
+			spawners[i].spawn--;
 			
 		}
 		
@@ -659,17 +785,11 @@ function reset() {
 	// Create an empty list to hold the packages
 	packages = [];
 	
-	// Add a package
-	packages.push(Package(Point(4,2), color(222,184,135), "brown"));
-	packages.push(Package(Point(3,2), color(222,184,135), "brown"));
-	packages.push(Package(Point(2,2), color(218,165,32), "yellow"));
+	// Create an empty list of spawners
+	spawners = [];
 	
-	// Create an empty list to hold the goals
-	goals = [];
-	
-	// Add a goal
-	goals.push(Goal(Point(7,7), color(222,184,135), "brown"));
-	goals.push(Goal(Point(15,12), color(218,165,32), "yellow"));
+	// Add a spawner
+	spawners.push(Spawner(Point(5,5), 10, 7, Point(0,1), color(218,165,32), "yellow"));
 	
 }
 
