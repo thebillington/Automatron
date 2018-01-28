@@ -12,8 +12,8 @@
 
 	<div style="position: absolute; margin-bottom: 100px; font-weight: bold; width: 70%; padding: 15%; padding-top: 5%; text-align: justify; justify-content: center; border: 5px solid black; background-color: white;">
 
-		<img src="http://automatron.co.uk/res/automatron.png" style="display: block; max-width: 800px; width: 70%; height: auto; margin-left: auto; margin-right: auto;">
-
+		<a href="/"><img src="http://automatron.co.uk/res/automatron.png" style="display: block; max-width: 800px; width: 70%; height: auto; margin-left: auto; margin-right: auto;"></a>
+	
 <?php
 
 if(isset($_GET['t'])) {
