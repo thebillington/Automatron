@@ -129,9 +129,7 @@ function drawGrid() {
 			// Draw the grid square
 			drawGridSquare(x, y, backgroundColour);
 		}
-		
 	}
-	
 }
 
 // Function to draw a grid square
@@ -175,9 +173,20 @@ function drawPackages() {
 	
 	// Look at each package
 	for (var i =0; i < packages.length; i++) {
+		
+		// Get the colour
+		var colour = packages[i].colour;
+	
+		// Check if we have a package selected
+		if (currentObject == i && currentObjectList == packages) {
+		
+			// Set the colour to red
+			colour = color(255, 0, 0);
+		
+		}
 	
 		// Draw the package
-		drawGridSquare(packages[i].location.x, packages[i].location.y, packages[i].colour);
+		drawGridSquare(packages[i].location.x, packages[i].location.y, colour);
 	
 	}
 	
@@ -189,8 +198,19 @@ function drawGoals() {
 	// For each goal
 	for (var i = 0; i < goals.length; i++) {
 		
+		// Get the colour
+		var colour = goals[i].colour;
+	
+		// Check if we have a goal selected
+		if (currentObject == i && currentObjectList == goals) {
+		
+			// Set the colour to red
+			colour = color(255, 0, 0);
+		
+		}
+		
 		// Draw the goal
-		drawGoal(goals[i].location.x, goals[i].location.y, goals[i].colour);
+		drawGoal(goals[i].location.x, goals[i].location.y, colour);
 		
 	}
 	
@@ -202,8 +222,19 @@ function drawWalls() {
 	// Look at each wall
 	for (var i = 0; i < walls.length; i++) {
 		
+		// Get the colour
+		var colour = color(0);
+	
+		// Check if we have a goal selected
+		if (currentObject == i && currentObjectList == walls) {
+		
+			// Set the colour to red
+			colour = color(255, 0, 0);
+		
+		}
+		
 		// Draw the wall
-		drawGridSquare(walls[i].location.x, walls[i].location.y, color(0));
+		drawGridSquare(walls[i].location.x, walls[i].location.y, colour);
 		
 	}
 	
@@ -212,11 +243,22 @@ function drawWalls() {
 // Function to draw the spawners
 function drawSpawners() {
 	
-	// For each goal
+	// For each spawner
 	for (var i = 0; i < spawners.length; i++) {
 		
-		// Draw the goal
-		drawSpawner(spawners[i].location.x, spawners[i].location.y, spawners[i].colour, spawners[i].direction.x, spawners[i].direction.y);
+		// Get the colour
+		var colour = spawners[i].colour;
+	
+		// Check if we have a goal selected
+		if (currentObject == i && currentObjectList == spawners) {
+		
+			// Set the colour to red
+			colour = color(255, 0, 0);
+		
+		}
+		
+		// Draw the spawner
+		drawSpawner(spawners[i].location.x, spawners[i].location.y, colour, spawners[i].direction.x, spawners[i].direction.y);
 		
 	}
 }
@@ -244,6 +286,14 @@ function mouseReleased() {
 	
 	// Check there is no dialogue open
 	if (dialoguesClosed()) {
+	
+		// Check that the mouse click is in the grid
+		if (!((mouseX >= 0 && mouseX <= canvasSize) && (mouseY >= 0 && mouseY <= canvasSize))) {
+			
+			// Return
+			return;
+			
+		}
 		
 		// Get the x and y
 		var x = Math.floor(mouseX / gridSquareSize);
@@ -275,8 +325,29 @@ function mouseReleased() {
 							showSpawnerDialogue(x, y);
 							break;
 							
+						// Packages
+						case "PACKAGE":
+						
+							// Open the package creation dialogue
+							showPackageDialogue(x, y);
+							break;
+							
+						// Goals
+						case "GOAL":
+						
+							// Open the goal creation dialogue
+							showGoalDialogue(x,y);
+							break;
+							
 					}
 				}
+			}
+			else {
+				
+				// Deselect the current object
+				currentObject = -1;
+				currentObjectList = null;
+				
 			}
 		}
 	}
@@ -292,11 +363,42 @@ function showSpawnerDialogue(x, y) {
 	
 }
 
+// Function to show the spawner dialogue
+function showPackageDialogue(x, y) {
+	
+	// Show the dialogue
+	document.getElementById('packageX').value = ""+x;
+	document.getElementById('packageY').value = ""+y;
+	document.getElementById('packageDialogue').style.visibility = "visible";
+	
+}
+
+// Function to show the spawner dialogue
+function showGoalDialogue(x, y) {
+	
+	// Show the dialogue
+	document.getElementById('goalX').value = ""+x;
+	document.getElementById('goalY').value = ""+y;
+	document.getElementById('goalDialogue').style.visibility = "visible";
+	
+}
+
+// Function to show the instructions
+function showInstructions() {
+	
+	// Show the instructions
+	document.getElementById('instructions').style.visibility = "visible";
+	
+}
+
 // Function to close all dialogues
 function closeDialogues() {
 	
 	// Close the dialogues
 	document.getElementById('spawnDialogue').style.visibility = "hidden";
+	document.getElementById('packageDialogue').style.visibility = "hidden";
+	document.getElementById('goalDialogue').style.visibility = "hidden";
+	document.getElementById('instructions').style.visibility = "hidden";
 	
 }
 
@@ -305,6 +407,12 @@ function dialoguesClosed() {
 	
 	//Check the spawner
 	if (document.getElementById('spawnDialogue').style.visibility != "hidden") {
+		return false;
+	}
+	if (document.getElementById('packageDialogue').style.visibility != "hidden") {
+		return false;
+	}
+	if (document.getElementById('goalDialogue').style.visibility != "hidden") {
 		return false;
 	}
 	return true;
@@ -329,6 +437,44 @@ function createSpawner() {
 	
 	// Create the spawner
 	spawners.push(Spawner(Point(x,y), i, f, Point(dx,dy), color(r,g,b), id)); 
+	
+	// Close dialogues
+	closeDialogues();
+	
+}
+
+// Function to create a package
+function createPackage() {
+	
+	// Get all of the attributes
+	var x = parseInt(document.getElementById('packageX').value);
+	var y = parseInt(document.getElementById('packageY').value);
+	var r = parseInt(document.getElementById('packageR').value);
+	var g = parseInt(document.getElementById('packageG').value);
+	var b = parseInt(document.getElementById('packageB').value);
+	var id = parseInt(document.getElementById('packageID').value);
+	
+	// Create the spawner
+	packages.push(Package(Point(x,y), color(r,g,b), id));
+	
+	// Close dialogues
+	closeDialogues();
+	
+}
+
+// Function to create a package
+function createGoal() {
+	
+	// Get all of the attributes
+	var x = parseInt(document.getElementById('goalX').value);
+	var y = parseInt(document.getElementById('goalY').value);
+	var r = parseInt(document.getElementById('goalR').value);
+	var g = parseInt(document.getElementById('goalG').value);
+	var b = parseInt(document.getElementById('goalB').value);
+	var id = parseInt(document.getElementById('goalID').value);
+	
+	// Create the spawner
+	goals.push(Goal(Point(x,y), color(r,g,b), id));
 	
 	// Close dialogues
 	closeDialogues();
@@ -405,10 +551,11 @@ function keyPressed() {
 		if (keyCode == D_KEY) {
 			
 			// Check if we have an object selected
-			if (currentSelection !== -1) {
+			if (currentObject !== -1) {
 				
 				// Delete the object
-				currentObjectList.splice(currentSelection, 1);
+				currentObjectList.splice(currentObject, 1);
+				currentObject = -1;
 				
 			}
 		}
