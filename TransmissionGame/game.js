@@ -923,6 +923,8 @@ function openLevel(levelText) {
 	// Load the level data
 	var levelData = levelText.split("\n");
 	
+	console.log(levelData);
+	
 	// Check the number of packages, goals, spawners and walls
 	var noPackages = parseInt(levelData[0]);
 	var noGoals = parseInt(levelData[1]);

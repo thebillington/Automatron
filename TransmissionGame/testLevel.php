@@ -15,12 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	
 }
 else {
-	die('You must have got here by mistake! NO POST');
+	die('You must have got here by mistake!');
 }
 
 ?>
 
-<html style="height: 100%;">
+<html style="height: 100%; overflow-y: hidden;">
 
 <head>
 	

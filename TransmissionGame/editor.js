@@ -391,6 +391,25 @@ function showInstructions() {
 	
 }
 
+// Function to show the level save dialogue
+function showSave() {
+	
+	// Show the save dialogue
+	document.getElementById('saveDialogue').style.visibility = "visible";
+	
+}
+
+// Function to save a level
+function saveLevelPost() {
+	
+	// Post
+	getLevelData();
+	
+	// Post the form
+	document.getElementById('saveLevelForm').submit();
+	
+}
+
 // Function to close all dialogues
 function closeDialogues() {
 	
@@ -399,13 +418,14 @@ function closeDialogues() {
 	document.getElementById('packageDialogue').style.visibility = "hidden";
 	document.getElementById('goalDialogue').style.visibility = "hidden";
 	document.getElementById('instructions').style.visibility = "hidden";
+	document.getElementById('saveDialogue').style.visibility = "hidden";
 	
 }
 
 // Function to check if all dialogues are closed
 function dialoguesClosed() {
 	
-	//Check the spawner
+	//Check that dialogues are closed
 	if (document.getElementById('spawnDialogue').style.visibility != "hidden") {
 		return false;
 	}
@@ -413,6 +433,12 @@ function dialoguesClosed() {
 		return false;
 	}
 	if (document.getElementById('goalDialogue').style.visibility != "hidden") {
+		return false;
+	}
+	if (document.getElementById('instructions').style.visibility != "hidden") {
+		return false;
+	}
+	if (document.getElementById('saveDialogue').style.visibility != "hidden") {
 		return false;
 	}
 	return true;
@@ -665,14 +691,6 @@ function overlap(pointOne, pointTwo) {
 	
 }
 
-// Function to test the level
-function testLevel() {
-	
-	// Get the levels text
-	document.getElementById('testLevelData').value = getLevelData();
-	
-}
-
 // Function to get the level data
 function getLevelData() {
 	
@@ -717,7 +735,16 @@ function getLevelData() {
 	}
 	
 	// Set the level data as the form data to send to the testLevel script
+	document.getElementById('levelData').value = levelData;
 	document.getElementById('testLevelData').value = levelData;
+	
+}
+
+// Function to test a level
+function testLevelPost() {
+	
+	// Get the level data
+	getLevelData();
 	
 	// Send the form
 	document.getElementById('submitTestLevel').submit();

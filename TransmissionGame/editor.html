@@ -15,7 +15,8 @@
 <div style="position: absolute; top: 1%; text-align: center;">
 	<h1 style="margin: 5px;">Level Editor</h1>
 	<button onclick="showInstructions()">Instructions</button>
-	<button onclick="testLevel()">Test Level</button>
+	<button onclick="testLevelPost()">Test Level</button>
+	<button onclick="showSave()">Save</button>
 </div>
 	
 <div id="instructions" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
@@ -74,16 +75,19 @@
 	
 </div>
 
-<div id="saveLevel" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
+<div id="saveDialogue" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
 
-	<h1>Goal creation dialogue</h1>
+	<h1>Save Level</h1>
 	
-	<p>X: <input id="goalX" type="number" readonly> Y: <input id="goalY" type="number" readonly></p>
+	<form action="submitLevel.php" target="_blank" method="post" id="saveLevelForm">
 	
-	<p>Colour (RGB 0-255): R <input id="goalR" type="number" value="255" min="0" max="255"> G <input id="goalG" type="number" value="255" min="0" max="255"> B <input id="goalB" type="number" value="255" min="0" max="255"></p>
-	<p>ID: <input id="goalID" value="0" type="number" min="0" max="9999"></p>
+		<p>Level Name: <input id="levelName" name="levelName" type="text"></p>
+		
+		<input type="hidden" name="levelData" id="levelData">
 	
-	<button onclick="createGoal()">Create</button> <button onclick="closeDialogues()">Cancel</button>
+	</form>
+	
+	<button onclick="saveLevelPost()">Create</button> <button onclick="closeDialogues()">Cancel</button>
 	
 </div>
 
