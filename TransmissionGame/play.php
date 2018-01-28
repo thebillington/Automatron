@@ -178,8 +178,6 @@ else {
 	<button onclick="closeDialogues()">Close</button>
 	
 </div>
-
-
 	
 <div id="winDialogue" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
 

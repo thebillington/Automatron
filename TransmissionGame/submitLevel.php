@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			fwrite($levelFile, $_POST['levelData']);
 			fclose($levelFile);
 			
-			echo "LEVEL CREATED SUCCESSFULLY";
+			echo "<p>LEVEL CREATED SUCCESSFULLY<br/><a href='browser.php?=community'>Levels</a></p>";
 			
 		}
 		else {
