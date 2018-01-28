@@ -967,9 +967,9 @@ function openLevel(levelText) {
 	for (var i = 4 + noPackages + noGoals; i < 4 + noPackages + noGoals + noWalls; i++) {
 		
 		// Get the goal data
-		var goalData = levelData[i].split(" ");
-		var x = parseInt(goalData[0]);
-		var y = parseInt(goalData[1]);
+		var wallData = levelData[i].split(" ");
+		var x = parseInt(wallData[0]);
+		var y = parseInt(wallData[1]);
 		
 		// Create a new package
 		walls.push(Wall(Point(x,y)));
@@ -980,19 +980,35 @@ function openLevel(levelText) {
 	for (var i = 4 + noPackages + noGoals + noWalls; i < 4 + noPackages + noGoals + noWalls + noSpawners; i++) {
 		
 		// Get the goal data
-		var goalData = levelData[i].split(" ");
-		var x = parseInt(goalData[0]);
-		var y = parseInt(goalData[1]);
-		var it = parseInt(goalData[3]);
-		var f = parseInt(goalData[4]);
-		var dx = parseInt(goalData[5]);
-		var dy = parseInt(goalData[6]);
-		var r = parseInt(goalData[6]);
-		var g = parseInt(goalData[7]);
-		var b = parseInt(goalData[8]);
-		var id = parseInt(goalData[9]);
+		var spawnerData = levelData[i].split(" ");
+		var x = parseInt(spawnerData[0]);
+		var y = parseInt(spawnerData[1]);
+		var it = parseInt(spawnerData[2]);
+		var f = parseInt(spawnerData[3]);
+		var dx = parseInt(spawnerData[4]);
+		var dy = parseInt(spawnerData[5]);
+		var r = parseInt(spawnerData[6]);
+		var g = parseInt(spawnerData[7]);
+		var b = parseInt(spawnerData[8]);
+		var id = parseInt(spawnerData[9]);
 		
 		// Create a new package
 		spawners.push(Spawner(Point(x,y), it, f, Point(dx,dy), color(r,g,b), id));
 	}
+}
+
+// Function to show the instructions
+function showInstructions() {
+	
+	// Show the instructions
+	document.getElementById('instructions').style.visibility = "visible";
+	
+}
+
+// Function to close all dialogues
+function closeDialogues() {
+	
+	// Close the dialogues
+	document.getElementById('instructions').style.visibility = "hidden";
+	
 }

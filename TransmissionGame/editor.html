@@ -3,7 +3,7 @@
 <html style="height: 100%;">
 
 <head>
-	<title>Transmission Game</title>
+	<title>Automatron</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.js"></script>
     <script src="editor.js"></script>
 </head>
@@ -12,8 +12,8 @@
 
 <form action="testLevel.php" target="_blank" method="post" id="submitTestLevel"><input type="hidden" name="testLevelData" id="testLevelData"></form>
 
-<div style="position: absolute; top: 50px; text-align: center;">
-	<h1>Level Editor</h1>
+<div style="position: absolute; top: 1%; text-align: center;">
+	<h1 style="margin: 5px;">Level Editor</h1>
 	<button onclick="showInstructions()">Instructions</button>
 	<button onclick="testLevel()">Test Level</button>
 </div>
@@ -62,6 +62,19 @@
 </div>
 
 <div id="goalDialogue" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
+
+	<h1>Goal creation dialogue</h1>
+	
+	<p>X: <input id="goalX" type="number" readonly> Y: <input id="goalY" type="number" readonly></p>
+	
+	<p>Colour (RGB 0-255): R <input id="goalR" type="number" value="255" min="0" max="255"> G <input id="goalG" type="number" value="255" min="0" max="255"> B <input id="goalB" type="number" value="255" min="0" max="255"></p>
+	<p>ID: <input id="goalID" value="0" type="number" min="0" max="9999"></p>
+	
+	<button onclick="createGoal()">Create</button> <button onclick="closeDialogues()">Cancel</button>
+	
+</div>
+
+<div id="saveLevel" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
 
 	<h1>Goal creation dialogue</h1>
 	

@@ -1,78 +1,53 @@
 <!DOCTYPE html>
 
-<html style="height: 100%;">
+<html style="background-color: #B5D3E7">
 
 <head>
-	<title>Transmission Game</title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.js"></script>
-    <script src="editor.js"></script>
+	<title>Automatron</title>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Old+Standard+TT">
 </head>
 
-<body style="height: 100%; margin: 0; display: flex; justify-content: center; align-items: center;">
+<body style="position: absolute; font-family: 'Old Standard TT'; font-decoration: bold; overflow-x: hidden; width: 80%; margin: 0; margin-top: 5%; height: 100%; left: 10%;">
 
-<form action="testLevel.php" method="post" target="_blank" id="submitTestLevel"><input type="hidden" id="testLevelData"></form>
+	<div style="position: absolute; margin-bottom: 100px; font-weight: bold; width: 70%; padding: 15%; padding-top: 5%; text-align: justify; justify-content: center; border: 5px solid black; background-color: white;">
 
-<div style="position: absolute; top: 50px; text-align: center;">
-	<h1>Level Editor</h1>
-	<button onclick="showInstructions()">Instructions</button>
-	<button onclick="testLevel()">Test Level</button>
-</div>
+		<img src="http://automatron.co.uk/res/automatron.png" style="display: block; max-width: 800px; width: 70%; height: auto; margin-left: auto; margin-right: auto;">
 	
-<div id="instructions" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
-
-	<h1>Instructions</h1>
+		<h1>Play</h1>
+		
+		<p>Do you enjoy solving problems?</p>
+		
+		<p>Automatron is a game all about solving problems. However, there is so much you can do that it can get a <i>little</i> confusing, which is why we have put together this <a href="instructions.html">handy little guide</a> that explains all of the rules and how to play. It might look daunting, but jumping into Automatron will be some of the most fun you've had this year. This means our instruction booklet is well worth a read!</p>
+		
+		<p>In Automatron you create workers or 'automatrons' to help you run the factory floor. Each worker has a specific route they have to follow that you give them. You must pay attention to detail to ensure that all of your workers are doing the right thing, as if there is one thing out of place then the whole machine could fall to pieces!</p>
+		
+		<p>Ready to get started playing? Jump into our <a href="browser.php?t=tutorial">tutorial levels!</a>
+		
+		<img src="http://automatron.co.uk/res/gameplay.png" style="display: block; margin: 50px; max-width: 600px; width: 60%; height: auto; margin-left: auto; margin-right: auto;">
 	
-	<button onclick="closeDialogues()">Close</button>
-	
-</div>
-	
-<div id="spawnDialogue" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
-
-	<h1>Spawner creation dialogue</h1>
-	
-	<p>X: <input id="spawnerX" type="number" readonly> Y: <input id="spawnerY" type="number" readonly></p>
-	
-	<p>Direction to spawn boxes in: <select id="direction">
-		<option value="0 -1">Up</option>
-		<option value="0 1">Down</option>
-		<option value="-1 0">Left</option>
-		<option value="1 0">Right</option>
-	</select></p>
-	
-	<p>Colour (RGB 0-255): R <input id="spawnerR" type="number" value="255" min="0" max="255"> G <input id="spawnerG" type="number" value="255" min="0" max="255"> B <input id="spawnerB" type="number" value="255" min="0" max="255"></p>
-	<p>ID: <input id="spawnerID" value="0" type="number" min="0" max="9999"></p>
-	<p>Number of boxes to spawn: <input id="items" value="1" type="number" min="1" max="999"></p>
-	<p>Frequency of spawner (ticks between boxes spawning): <input id="freq" value="1" type="number" min="1" max="50"></p>
-
-	<button onclick="createSpawner()">Create</button> <button onclick="closeDialogues()">Cancel</button>
-	
-</div>
-
-<div id="packageDialogue" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
-
-	<h1>Package creation dialogue</h1>
-	
-	<p>X: <input id="packageX" type="number" readonly> Y: <input id="packageY" type="number" readonly></p>
-	
-	<p>Colour (RGB 0-255): R <input id="packageR" type="number" value="255" min="0" max="255"> G <input id="packageG" type="number" value="255" min="0" max="255"> B <input id="packageB" type="number" value="255" min="0" max="255"></p>
-	<p>ID: <input id="packageID" value="0" type="number" min="0" max="9999"></p>
-	
-	<button onclick="createPackage()">Create</button> <button onclick="closeDialogues()">Cancel</button>
-	
-</div>
-
-<div id="goalDialogue" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
-
-	<h1>Goal creation dialogue</h1>
-	
-	<p>X: <input id="goalX" type="number" readonly> Y: <input id="goalY" type="number" readonly></p>
-	
-	<p>Colour (RGB 0-255): R <input id="goalR" type="number" value="255" min="0" max="255"> G <input id="goalG" type="number" value="255" min="0" max="255"> B <input id="goalB" type="number" value="255" min="0" max="255"></p>
-	<p>ID: <input id="goalID" value="0" type="number" min="0" max="9999"></p>
-	
-	<button onclick="createGoal()">Create</button> <button onclick="closeDialogues()">Cancel</button>
-	
-</div>
+		<h1>Solve</h1>
+		
+		<p>Do you think you have what it takes to be a programmer?</p>
+		
+		<p>At the heart of Automatron is problem solving. "You have to get each of your packages to the correct goal in order to win the level?" Sounds simple right? But what happens when you have multiple packages spawning into the same location, destined for different goals? Now you're talking!</p>
+		
+		<p>Better put that thinking cap on because once you've learned how to play, it's time to jump into our <a href="browser.php?t=campaign">campaign!</a></p>
+		
+		<h1>Create</h1>
+		
+		<p>Do you enjoy making things?</p>
+		
+		<p>Once you have completed all of the base game then Automatron has an unlimited number of levels to offer you thanks to our <a href="editor.html">Level Editor.</a> This handy editor allows you to design and build your own levels that you can then test in real time using the browser?</p>
+		
+		<h1>Share</h1>
+		
+		<p>If finishing the campaign and creating your own levels weren't enough, you can check out a <i>ton</i> of <a href="browser.php?t=community">community designed levels</a> giving you almost limitless problems to solve!</p>
+		
+		<center><h3>What are you waiting for?! <a href="http://automatron.co.uk/play.php?lvl=tutorialOne.txt">Get Playing!</a></h3></center>
+		
+		<center><p style="position:absolute; padding: 5px; bottom: 0;">Created by <a href="http://thebillington.co.uk" target="_blank">Billy Rebecchi</a> for Global Game Jam 18</p></center>
+		
+	</div>
 
 </body>
 
