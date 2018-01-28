@@ -664,3 +664,62 @@ function overlap(pointOne, pointTwo) {
 	return pointOne.x === pointTwo.x && pointOne.y === pointTwo.y;
 	
 }
+
+// Function to test the level
+function testLevel() {
+	
+	// Get the levels text
+	document.getElementById('testLevelData').value = getLevelData();
+	
+}
+
+// Function to get the level data
+function getLevelData() {
+	
+	// Create an empty string to store the level data
+	var levelData = "";
+	
+	// Get the attribute numbers
+	levelData += packages.length + "\n" + goals.length + "\n" + (walls.length - 88) + "\n" + spawners.length;
+	
+	// Look at each package
+	for (var i = 0; i < packages.length; i++) {
+		
+		// Add the package data
+		levelData += "\n" + packages[i].location.x + " " + packages[i].location.y + " " + packages[i].colour.levels[0] + " " + packages[i].colour.levels[1] + " " + packages[i].colour.levels[2] + " " + packages[i].id;
+		
+	}
+		
+	// Look at each goal
+	for (var i = 0; i < goals.length; i++) {
+		
+		// Add the package data
+		levelData += "\n" + goals[i].location.x + " " + goals[i].location.y + " " + goals[i].colour.levels[0] + " " + goals[i].colour.levels[1] + " " + goals[i].colour.levels[2] + " " + goals[i].id;
+		
+	}
+		
+	// Look at each wall
+	for (var i = 88; i < walls.length; i++) {
+		
+		// Add the package data
+		levelData += "\n" + walls[i].location.x + " " + walls[i].location.y;
+		
+	}
+		
+	// Look at each spawner
+	for (var i = 0; i < spawners.length; i++) {
+		
+		// Add the package data
+		console.log(spawners[i].colour);
+		console.log(spawners[i].colour.levels);
+		levelData += "\n" + spawners[i].location.x + " " + spawners[i].location.y + " " + spawners[i].items + " " + spawners[i].frequency + " " + spawners[i].direction.x + " " + spawners[i].direction.y + " " + spawners[i].colour.levels[0] + " " + spawners[i].colour.levels[1] + " " + spawners[i].colour.levels[2] + " " + spawners[i].id;
+		
+	}
+	
+	// Set the level data as the form data to send to the testLevel script
+	document.getElementById('testLevelData').value = levelData;
+	
+	// Send the form
+	document.getElementById('submitTestLevel').submit();
+	
+}
