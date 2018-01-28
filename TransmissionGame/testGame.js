@@ -47,11 +47,8 @@ var levelFile;
 // Setup function run before game starts
 function setup() {
 	
-	// Set the level file
-	levelFile = "http://automatron.co.uk/" + document.getElementById("levelFile").innerHTML;
-	
 	// Load the level
-	loadLevel(levelFile);
+	loadLevel();
 	
 	// Create a canvas
 	createCanvas(canvasSize, canvasSize);
@@ -716,7 +713,7 @@ function reset() {
 	crashed = false;
 	
 	// Reload the level
-	loadLevel(levelFile);
+	loadLevel();
 	
 }
 
@@ -876,32 +873,10 @@ function crash() {
 }
 
 //Create a function to load in from file
-function loadLevel(levelName) {
+function loadLevel() {
     
     //First create a http request and fetch the file
-    var client = new XMLHttpRequest();
-    client.open('GET', levelName, true);
-    client.send();
-    
-    //When the file is received parse the text
-    client.onreadystatechange = function() {
-        
-        //If the client is ready
-        if (client.readyState == 4) {
-            
-            //If fetching was successful
-            if(client.status == 200) {
-                
-                //Open the level
-                var levelText = client.responseText;
-                openLevel(levelText);
-				
-            } else {
-                //Log failure
-                alert("Failed to load level from server.")
-            }
-        }
-    }
+    openLevel(document.getElementById('levelData').innerHTML);
 }
 
 // Function to load level data from a text file
@@ -972,8 +947,7 @@ function openLevel(levelText) {
 		var y = parseInt(goalData[1]);
 		
 		// Create a new package
-		walls.push(Wall(Point(x,y)));
-		
+		walls.push(Wall(Point(x,y)));	
 	}
 	
 	// Get the spawners
@@ -983,10 +957,10 @@ function openLevel(levelText) {
 		var goalData = levelData[i].split(" ");
 		var x = parseInt(goalData[0]);
 		var y = parseInt(goalData[1]);
-		var it = parseInt(goalData[3]);
-		var f = parseInt(goalData[4]);
-		var dx = parseInt(goalData[5]);
-		var dy = parseInt(goalData[6]);
+		var it = parseInt(goalData[2]);
+		var f = parseInt(goalData[3]);
+		var dx = parseInt(goalData[4]);
+		var dy = parseInt(goalData[5]);
 		var r = parseInt(goalData[6]);
 		var g = parseInt(goalData[7]);
 		var b = parseInt(goalData[8]);
