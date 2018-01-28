@@ -120,6 +120,9 @@ function draw() {
 	// Update the packages
 	updatePackages();
 	
+	// Check if the game has been won
+	checkWinner();
+	
 }
 
 // Function to generate the bounding box
@@ -1012,5 +1015,45 @@ function closeDialogues() {
 	
 	// Close the dialogues
 	document.getElementById('instructions').style.visibility = "hidden";
+	
+}
+
+// Function to check if the game has been won
+function checkWinner() {
+	
+	// Look at each spawner
+	for (var i = 0; i < spawners.length; i++) {
+		
+		// Check whether the spawner has any more items
+		if(spawners[i].items != 0) {
+			
+			// Return
+			return;
+			
+		}
+		
+	}
+	
+	// Check whether there are any packages
+	if (packages.length > 0) {
+		
+		// Return
+		return;
+		
+	}
+	
+	// Game has been won
+	winner();
+	
+}
+
+// Function to deal with the level being won
+function winner() {
+	
+	// Set running to false
+	running = false;
+	
+	// Show the winner dialogue
+	document.getElementById('winDialogue').style.visibility = "visible";
 	
 }

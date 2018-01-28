@@ -179,6 +179,18 @@ else {
 	
 </div>
 
+
+	
+<div id="winDialogue" style="position: absolute; text-align: center; padding: 100px; border: 10px solid black; background-color:white; width: 40%; height: 40%; top: 10%; overflow-y: scroll; visibility: hidden;">
+
+	<h1>Congratulations!</h1>
+	
+	<p>You finished the level</p>
+	
+	<p><a href="browser.php">Level List</a></p>
+	
+</div>
+
 </body>
 
 </html>
