@@ -6,9 +6,23 @@
 	<title>Automatron</title>
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Old+Standard+TT">
 	<link rel="stylesheet "type="text/css" href="style/lists.css">
+
+	<script>
+	function search() {
+		
+		window.location.replace("browser.php?s=" + document.getElementById('searchBar').value);
+		
+	}
+	</script>
 </head>
 
 <body style="position: absolute; font-family: 'Old Standard TT'; font-decoration: bold; overflow-x: hidden; width: 80%; margin: 0; margin-top: 5%; height: 100%; left: 10%;">
+
+	<div style="position: absolute; top:0; right: 0; padding: 5px; z-index: 1;">
+	
+		<p>Search: <input id="searchBar" placeholder="Search..."> <button onclick="search()">Search</button></p>
+	
+	</div>
 
 	<div style="position: absolute; margin-bottom: 100px; font-weight: bold; width: 70%; padding: 15%; padding-top: 5%; text-align: justify; justify-content: center; border: 5px solid black; background-color: white;">
 
@@ -32,7 +46,7 @@ if(isset($_GET['t'])) {
 			
 			if(strpos(strtoupper($f), strtoupper($_GET['s'])) !== false) {
 			
-				echo "<li><a href='/play.php?lvl=".$_GET['t']."/".$f."'>".$f."</a></li>";
+				echo "<li><a href='/play.php?lvl=".$_GET['t']."/".str_replace(".txt","",$f)."'>".$f."</a></li>";
 			
 			}
 			
@@ -52,7 +66,7 @@ if(isset($_GET['t'])) {
 
 		foreach ($files as $f) {
 		
-			echo "<li><a href='/play.php?lvl=".$_GET['t']."/".$f."'>".$f."</a></li>";
+			echo "<li><a href='/play.php?lvl=".$_GET['t']."/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 		}
 	}
@@ -73,7 +87,7 @@ else {
 			
 			if(strpos(strtoupper($f), strtoupper($_GET['s'])) !== false) {
 			
-				echo "<li><a href='/play.php?lvl=tutorials/".$f."'>".$f."</a></li>";
+				echo "<li><a href='/play.php?lvl=tutorials/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 			}
 			
@@ -87,7 +101,7 @@ else {
 			
 			if(strpos(strtoupper($f), strtoupper($_GET['s'])) !== false) {
 			
-				echo "<li><a href='/play.php?lvl=campaign/".$f."'>".$f."</a></li>";
+				echo "<li><a href='/play.php?lvl=campaign/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 			}
 			
@@ -101,7 +115,7 @@ else {
 			
 			if(strpos(strtoupper($f), strtoupper($_GET['s'])) !== false) {
 			
-				echo "<li><a href='/play.php?lvl=community/".$f."'>".$f."</a></li>";
+				echo "<li><a href='/play.php?lvl=community/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 			}
 			
@@ -118,7 +132,7 @@ else {
 
 		foreach ($files as $f) {
 			
-			echo "<li><a href='/play.php?lvl=tutorials/".$f."'>".$f."</a></li>";
+			echo "<li><a href='/play.php?lvl=tutorials/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 		}
 		
@@ -128,7 +142,7 @@ else {
 
 		foreach ($files as $f) {
 			
-			echo "<li><a href='/play.php?lvl=campaign/".$f."'>".$f."</a></li>";
+			echo "<li><a href='/play.php?lvl=campaign/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 		}
 		
@@ -138,7 +152,7 @@ else {
 
 		foreach ($files as $f) {
 			
-			echo "<li><a href='/play.php?lvl=community/".$f."'>".$f."</a></li>";
+			echo "<li><a href='/play.php?lvl=community/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 		}
 	}
