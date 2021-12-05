@@ -31,6 +31,8 @@ var running;
 // Store whether the game has crashed
 var crashed;
 
+var levelLoaded = false;
+
 // Keys
 var SPACE = 32;
 var C_KEY = 67;
@@ -48,7 +50,7 @@ var levelFile;
 function setup() {
 	
 	// Set the level file
-	levelFile = "http://automatron.co.uk/" + document.getElementById("levelFile").innerHTML;
+	levelFile = "http://billyrebecchi.co.uk/automatron/" + document.getElementById("levelFile").innerHTML;
 	
 	// Load the level
 	loadLevel(levelFile);
@@ -81,6 +83,8 @@ function setup() {
 
 // Render function
 function draw() {
+
+	if (!levelLoaded) return;
 
 	// Check whether we are running
 	if (running) {
@@ -926,8 +930,6 @@ function openLevel(levelText) {
 	// Load the level data
 	var levelData = levelText.split("\n");
 	
-	console.log(levelData);
-	
 	// Check the number of packages, goals, spawners and walls
 	var noPackages = parseInt(levelData[0]);
 	var noGoals = parseInt(levelData[1]);
@@ -1000,6 +1002,8 @@ function openLevel(levelText) {
 		// Create a new package
 		spawners.push(Spawner(Point(x,y), it, f, Point(dx,dy), color(r,g,b), id));
 	}
+
+	levelLoaded = true;
 }
 
 // Function to show the instructions

@@ -26,7 +26,7 @@
 
 	<div style="position: absolute; margin-bottom: 100px; font-weight: bold; width: 70%; padding: 15%; padding-top: 5%; text-align: justify; justify-content: center; border: 5px solid black; background-color: white;">
 
-		<a href="/"><img src="http://automatron.co.uk/res/automatron.png" style="display: block; max-width: 800px; width: 70%; height: auto; margin-left: auto; margin-right: auto;"></a>
+		<a href="/automatron"><img src="/automatron/res/automatron.png" style="display: block; max-width: 800px; width: 70%; height: auto; margin-left: auto; margin-right: auto;"></a>
 	
 <?php
 
@@ -46,7 +46,7 @@ if(isset($_GET['t'])) {
 			
 			if(strpos(strtoupper($f), strtoupper($_GET['s'])) !== false) {
 			
-				echo "<li><a href='/play.php?lvl=".$_GET['t']."/".str_replace(".txt","",$f)."'>".$f."</a></li>";
+				echo "<li><a href='/automatron/play.php?lvl=".$_GET['t']."/".str_replace(".txt","",$f)."'>".$f."</a></li>";
 			
 			}
 			
@@ -66,7 +66,7 @@ if(isset($_GET['t'])) {
 
 		foreach ($files as $f) {
 		
-			echo "<li><a href='/play.php?lvl=".$_GET['t']."/".$f."'>".str_replace(".txt","",$f)."</a></li>";
+			echo "<li><a href='/automatron/play.php?lvl=".$_GET['t']."/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 		}
 	}
@@ -87,7 +87,7 @@ else {
 			
 			if(strpos(strtoupper($f), strtoupper($_GET['s'])) !== false) {
 			
-				echo "<li><a href='/play.php?lvl=tutorials/".$f."'>".str_replace(".txt","",$f)."</a></li>";
+				echo "<li><a href='/automatron/play.php?lvl=tutorials/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 			}
 			
@@ -101,7 +101,7 @@ else {
 			
 			if(strpos(strtoupper($f), strtoupper($_GET['s'])) !== false) {
 			
-				echo "<li><a href='/play.php?lvl=campaign/".$f."'>".str_replace(".txt","",$f)."</a></li>";
+				echo "<li><a href='/automatron/play.php?lvl=campaign/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 			}
 			
@@ -115,7 +115,7 @@ else {
 			
 			if(strpos(strtoupper($f), strtoupper($_GET['s'])) !== false) {
 			
-				echo "<li><a href='/play.php?lvl=community/".$f."'>".str_replace(".txt","",$f)."</a></li>";
+				echo "<li><a href='/automatron/play.php?lvl=community/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 			}
 			
@@ -132,7 +132,7 @@ else {
 
 		foreach ($files as $f) {
 			
-			echo "<li><a href='/play.php?lvl=tutorials/".$f."'>".str_replace(".txt","",$f)."</a></li>";
+			echo "<li><a href='/automatron/play.php?lvl=tutorials/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 		}
 		
@@ -142,7 +142,7 @@ else {
 
 		foreach ($files as $f) {
 			
-			echo "<li><a href='/play.php?lvl=campaign/".$f."'>".str_replace(".txt","",$f)."</a></li>";
+			echo "<li><a href='/automatron/play.php?lvl=campaign/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 		}
 		
@@ -152,7 +152,7 @@ else {
 
 		foreach ($files as $f) {
 			
-			echo "<li><a href='/play.php?lvl=community/".$f."'>".str_replace(".txt","",$f)."</a></li>";
+			echo "<li><a href='/automatron/play.php?lvl=community/".$f."'>".str_replace(".txt","",$f)."</a></li>";
 			
 		}
 	}
